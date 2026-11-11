@@ -1,0 +1,39 @@
+{
+ "nota": "Mapeo 1 a 1 de las 10 vitrinas de la escena 3D a las 10 tiendas de la app (claves de SHOPS, ver tiendas.js). walk3d.js: escena_a_app decide qué afiches van en cada vitrina (picks(cat)) y qué tienda abre 'Entrar a la tienda'; destino_de_app decide a qué vitrina se camina para cada tienda. Editar junto con tiendas.js.",
+ "escena_a_app": {
+  "01": "Carteras",
+  "02": "Zapatos",
+  "03": "Deportes",
+  "04": "Relojes",
+  "05": "Lenceria",
+  "06": "Invierno",
+  "07": "Ropa",
+  "08": "RopaHombre",
+  "09": "__ultimo",
+  "10": "Otros"
+ },
+ "destino_de_app": {
+  "Carteras": "01",
+  "Zapatos": "02",
+  "Deportes": "03",
+  "Relojes": "04",
+  "Lenceria": "05",
+  "Invierno": "06",
+  "Ropa": "07",
+  "RopaHombre": "08",
+  "__ultimo": "09",
+  "Otros": "10"
+ },
+ "nombres_escena": {
+  "01": "Carteras",
+  "02": "Zapatos",
+  "03": "Ropa Deportiva",
+  "04": "Relojes y Joyas",
+  "05": "Lencería",
+  "06": "Ropa Invierno",
+  "07": "Ropa Mujer",
+  "08": "Ropa Hombre",
+  "09": "Ofertas",
+  "10": "Outlet"
+ }
+}

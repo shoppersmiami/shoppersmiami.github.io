@@ -1,0 +1,144 @@
+/* Shoppers Miami — pedido → transferencia → orden de compra (ordenes.js)
+   Tema morado + cian (variables de theme_miami.css). Texto mínimo 14 px, botones grandes. */
+
+/* ---------- estados ---------- */
+.oc-pill{font-size:14px;font-weight:600;white-space:normal;line-height:1.25}
+/* Código de color único de estados (pedidos, casilla, clientes, tableros): pendiente = rojo,
+   por aprobar = ámbar, pagado / hecho = verde, cancelado = gris. Más específico que .pill.amber/.coral
+   del tema (que en theme_miami.css se ven cian y rosado). */
+html body .pill.st-red{color:#fff;background:#c8102e;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 0 1px rgba(110,0,20,.45);text-shadow:none}
+html body .pill.st-amber{color:#4a2c00;background:#ffc94a;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 1px rgba(140,90,0,.45);text-shadow:none}
+html body .pill.st-green{color:#fff;background:#13804f;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 0 1px rgba(0,70,40,.45);text-shadow:none}
+html body .pill.st-grey{color:#3d3550;background:#e4e0ec;box-shadow:inset 0 0 0 1px rgba(58,31,110,.2);text-shadow:none}
+
+/* ---------- bloque dentro del pedido ---------- */
+.oc-block{margin-top:12px;padding:14px;border-radius:var(--t-r-s);background:var(--t-pwell);box-shadow:var(--t-pwell-sh);color:var(--t-ink);font-size:15px}
+.oc-block.oc-mini{padding:12px;margin-top:10px}
+.oc-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.oc-num,.oc-docnum{font:700 16px/1 var(--t-ui);letter-spacing:.06em;color:var(--t-link)}
+.oc-amount{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:10px;font-size:15px;color:var(--t-ink-2)}
+.oc-amount b{font-size:20px;color:var(--t-ink)}
+.oc-desglose{margin-top:8px}
+.oc-desglose>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--t-link);font-size:15px}
+.oc-desglose .b3-voucher{margin-top:6px}
+.oc-hint,.oc-p{font-size:15px;line-height:1.45;color:var(--t-ink-2);margin:10px 0}
+.oc-block .btn,.oc-done .btn,.oc-dash .btn{min-height:48px;font-size:15px}
+.oc-block .btn.sm,.oc-dash .btn.sm{min-height:44px}
+.oc-approve{margin-top:12px}
+.oc-approve:disabled{opacity:1;filter:grayscale(.85);background:#d9d2ea;color:#4a3d66;text-shadow:none;box-shadow:inset 0 0 0 1px rgba(58,31,110,.25);cursor:not-allowed}
+.oc-up{margin-top:8px}
+.oc-up .up-receipt{min-height:52px;border:2px dashed rgba(0,128,143,.55)}
+.oc-rcpt-line{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px;border-radius:var(--t-r-xs);background:#fff;box-shadow:0 0 0 1px rgba(0,128,143,.35)}
+.oc-rcpt-line .grow{display:flex;flex-direction:column;gap:2px;min-width:0}
+.oc-rcpt-line b{font-size:15px}
+.oc-rcpt-line span span{font-size:14px;color:var(--t-ink-2)}
+.oc-thumb{flex:none;width:44px;height:44px;border-radius:8px;overflow:hidden;background:#ece6fa;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(58,31,110,.2)}
+.oc-thumb.big{width:64px;height:80px}
+.oc-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.oc-thumb .rp-pdf{font-size:14px}
+
+/* seguimiento */
+.oc-track{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:12px 0 0;padding:0}
+.oc-track li{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;line-height:1.15;text-align:center;color:var(--t-ink-3)}
+.oc-track li span{width:100%;height:6px;border-radius:3px;background:#d9d1ee}
+.oc-track li.on span{background:var(--mi-line);box-shadow:var(--mi-line-glow)}
+.oc-track li.now{color:var(--t-ink);font-weight:700}
+@media (max-width:480px){.oc-track li{font-size:0}.oc-track li.now{font-size:14px}}
+
+/* orden de compra */
+.oc-doc{margin-top:12px;padding:14px;border-radius:var(--t-r-s);background:#fff;box-shadow:inset 0 3px 0 var(--mi-cyan),0 0 0 1px rgba(58,31,110,.2);display:flex;flex-direction:column;gap:8px}
+.oc-kicker{font:600 14px/1.2 var(--t-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--mi-cyan-dd)}
+.oc-docnum{font-size:22px}
+.oc-verif{font-size:14px;color:var(--t-ink-2)}
+.oc-h4{font:700 16px/1.2 var(--t-ui);margin:10px 0 0;color:var(--t-ink)}
+.oc-steps,.oc-next{margin:6px 0 0;padding-left:22px;font-size:15px;line-height:1.45;color:var(--t-ink)}
+.oc-steps li,.oc-next li{margin:0 0 6px}
+.oc-next li{display:list-item}
+.oc-next b{display:block}
+.oc-next span{color:var(--t-ink-2)}
+
+/* ---------- caja: pantalla final ---------- */
+.oc-done{margin-top:6px}
+.oc-sent{display:flex;flex-direction:column;gap:8px}
+.oc-sent .oc-kicker{font-size:15px}
+.oc-st-line{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.oc-done .oc-h{margin:20px 0 8px;font-size:17px}
+.oc-done .wa-fallback{margin:0;text-align:center;font-size:14px}
+.oc-wa-alt{margin-top:8px}
+.oc-done .oc-next{background:var(--t-panel);box-shadow:var(--t-panel-edge);border-radius:var(--t-r-s);padding:14px 14px 8px 34px;color:var(--t-ink)}
+
+/* ---------- tablero de pagos ---------- */
+.oc-dash{margin:18px 0 6px;padding:14px;border-radius:var(--t-r);background:var(--t-panel);box-shadow:var(--t-panel-edge);color:var(--t-ink)}
+.oc-dash.compact{margin:12px 0}
+.oc-dash-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.oc-dash-h .section-title{margin:0;color:var(--t-ink);text-shadow:none}
+.oc-dash-h .small,.oc-dash-sum{font-size:15px;color:var(--t-ink-2);margin:0}
+.oc-dash-sum{font-weight:700;color:var(--t-ink)}
+.oc-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+.oc-kpi{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:4px;padding:12px;border-radius:var(--t-r-s);background:#fff;box-shadow:0 0 0 1px rgba(58,31,110,.18),inset 0 4px 0 var(--k,#9b5cff);min-height:96px}
+.oc-kpi-pend{--k:#c8102e}.oc-kpi-review{--k:#ffb000}.oc-kpi-paid{--k:#13804f}.oc-kpi-toship{--k:#13804f}.oc-kpi-ship{--k:#13804f}
+.oc-kpi span{font-size:14px;line-height:1.25;color:var(--t-ink-2);font-weight:600}
+.oc-kpi b{font:700 28px/1 var(--t-ui);color:var(--t-ink)}
+.oc-kpi small{font-size:14px;color:var(--t-ink-2)}
+.oc-kpi[aria-pressed="true"]{box-shadow:0 0 0 2px var(--t-focus),inset 0 4px 0 var(--k);background:#faf7ff}
+.oc-kpi:focus-visible{outline:3px solid var(--t-focus-ring);outline-offset:2px}
+.oc-tabs{position:relative;display:flex;gap:6px;margin-top:14px;overflow-x:auto;scrollbar-width:none}
+.oc-tabs button{all:unset;cursor:pointer;flex:none;min-height:44px;padding:0 14px;display:flex;align-items:center;gap:6px;border-radius:999px;font:600 14px/1 var(--t-ui);color:var(--t-ink-2);background:#ece6fa}
+.oc-tabs button span{min-width:22px;height:22px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:var(--t-ink);font-size:14px}
+.oc-tabs button[aria-selected="true"]{color:#fff;background:linear-gradient(100deg,#6b34e0,#4a52d8 55%,#007f8e)}
+.oc-tabs button:focus-visible{outline:3px solid var(--t-focus-ring)}
+.oc-dash-tools{display:grid;grid-template-columns:1fr 200px;gap:8px;margin-top:12px}
+.oc-dash-tools[hidden]{display:none}
+.oc-dash-tools .in{min-height:48px;font-size:15px}
+.oc-dlist{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.oc-di{display:flex;gap:12px;padding:12px;border-radius:var(--t-r-s);background:#fff;box-shadow:0 0 0 1px rgba(58,31,110,.16)}
+.oc-di-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.oc-di-h{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.oc-di-name{font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.oc-di-amt{font:700 17px/1.2 var(--t-ui);white-space:nowrap}
+.oc-di-m{font-size:14px;color:var(--t-ink-2);line-height:1.4}
+.oc-days{color:#7a4a00}.oc-days.late{color:#c8102e}
+.oc-di-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;align-items:center}
+.oc-di-a .oc-up{margin:0;flex:1 1 220px}
+.oc-di-a .oc-up .up-receipt{min-height:44px;margin:0}
+.oc-di-a .btn{flex:0 1 auto}
+.oc-di-a .oc-approve{margin:0}
+.oc-next-st{display:flex;flex-direction:column;gap:2px;flex:1 1 100%}
+.oc-next-st .small{font-size:14px;color:var(--t-ink-2)}
+.oc-empty{padding:18px;text-align:center;font-size:15px;color:var(--t-ink-2);background:#fff;border-radius:var(--t-r-s)}
+.order-g.oc-flash{box-shadow:0 0 0 3px var(--mi-cyan),var(--t-panel-edge)}
+@media (max-width:900px){.oc-kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){
+  .oc-kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .oc-kpi{padding:10px 8px;min-height:104px}
+  .oc-kpi b{font-size:24px}
+  .oc-dash-tools{grid-template-columns:1fr}
+  .oc-di-a .btn,.oc-di-a .oc-up{flex:1 1 100%}
+}
+@media (min-width:561px){.oc-tabs{flex-wrap:wrap;overflow:visible}}
+
+/* ---------- ajustes ---------- */
+.oc-set textarea{min-height:64px;font-size:15px}
+.oc-prev{margin-top:14px;padding:12px;border-radius:var(--t-r-s);background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+.oc-prev b{font-size:15px}
+
+/* hoja de confirmación */
+.oc-q{margin:4px 0 6px;font-size:22px}
+
+/* ---------- envío ---------- */
+.oc-ship{margin-top:12px;padding:14px;border-radius:var(--t-r-s);background:#fff;box-shadow:inset 4px 0 0 var(--mi-cyan),0 0 0 1px rgba(0,128,143,.35);display:flex;flex-direction:column;gap:8px}
+.oc-track-n{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:var(--t-r-xs);background:var(--mi-violet-2);color:#fff}
+.oc-track-n span{font-size:14px;color:var(--mi-cyan);letter-spacing:.04em}
+.oc-track-n b{font:700 24px/1.15 var(--t-ui);letter-spacing:.06em;word-break:break-all}
+.oc-ship-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:15px}
+.oc-ship-dl dt{color:var(--t-ink-3);font-weight:600}
+.oc-ship-dl dd{margin:0;color:var(--t-ink)}
+.oc-trk{letter-spacing:.04em;color:var(--t-ink)}
+.oc-shipf .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.oc-shipf .in{min-height:48px;font-size:16px}
+.oc-err{color:#a3162e;min-height:1em;font-size:14px;margin:8px 0 0}
+.oc-sample{margin:0 0 12px;padding:10px 12px;border-radius:var(--t-r-xs);background:#fff6d8;color:#5e3b00;font-size:14px;line-height:1.45;box-shadow:inset 0 0 0 1px rgba(150,95,0,.35)}
+@media (max-width:420px){.oc-shipf .two{grid-template-columns:1fr}}
+/* botones claros dentro del tablero (panel claro), igual que en .card */
+.oc-dash .btn.ghost,.oc-block .btn.ghost{color:var(--t-ink);text-shadow:var(--t-key-ts);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+.oc-dash .btn.ghost:active:not(:disabled),.oc-block .btn.ghost:active:not(:disabled){transform:translateY(2px);background:var(--t-key-press);box-shadow:var(--t-key-press-sh)}

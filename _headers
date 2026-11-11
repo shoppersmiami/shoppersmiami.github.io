@@ -1,0 +1,43 @@
+# Encabezados para Netlify (https://docs.netlify.com/routing/headers/)
+# Ojo: si una ruta calza con varias reglas, Netlify junta los valores;
+# por eso ninguna ruta de abajo se repite en dos reglas de Cache-Control.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  X-Frame-Options: SAMEORIGIN
+
+# HTML, configuración y código: siempre revalidar (usan ?v=, pero por si acaso)
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/config.js
+  Cache-Control: no-cache
+/app.js
+  Cache-Control: no-cache
+/styles.css
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
+  Content-Type: application/manifest+json
+
+# Renders de Blender y tipografías: caché larga (1 año, inmutable).
+# mall.json se pide con fetch {cache:"no-cache"}, así que igual se revalida.
+/mall/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Lectura de etiquetas y medición con tarjeta (todo local, ver vision/ y vendor/)
+# sw.js y vision/*.js: siempre revalidar. vendor/ (motor OCR + modelo, ~7 MB): 1 semana.
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+/vision/*
+  Cache-Control: no-cache
+/vendor/*
+  Cache-Control: public, max-age=604800
+/vendor/tesseract/*.wasm
+  Content-Type: application/wasm

@@ -1,0 +1,687 @@
+/* =====================================================================
+   Mi Shopper Miami — Tema MIAMI · "Morado y cian"
+   Miami de noche premium (Design District / Art Basel): terrazo violeta profundo,
+   vidrio esmerilado violeta con canto, línea de luz morado→cian, paneles de vidrio
+   blanco lila y piedra caliza clara dentro de las tiendas.
+   Paleta:
+     violeta noche  #1d0e3a  (fondo)        violeta barra #2a1450 / #3a1f6e
+     morado vivo    #7b3fe4 / #9b5cff       cian LED      #22e3f0
+     cian profundo  #00808f (texto blanco AA) flamingo   #ff7aa2 (solo descuentos)
+     tinta          #1a1030  · papel lila   #f6f2ff
+   Una sola luz arriba a la izquierda: brillo arriba/izq., canto oscuro abajo/der.,
+   sombra proyectada hacia abajo. Sin backdrop-filter en listas. Texto mínimo 14 px.
+   Se carga EN LUGAR de material.css (que queda en disco como respaldo).
+   Texturas propias: img/miami/noche.jpg y img/miami/caliza.jpg (PIL, repetibles).
+   Fuente generada: /home/claude/test/tech_src/miami.css + core.css (miami_build.py)
+   ===================================================================== */
+:root{
+  --mi-violet-0:#140829; --mi-violet-1:#1d0e3a; --mi-violet-2:#2a1450; --mi-violet-3:#3a1f6e; --mi-violet-4:#4b2a8c;
+  --mi-purple:#7b3fe4; --mi-purple-l:#9b5cff; --mi-cyan:#22e3f0; --mi-cyan-d:#00808f; --mi-cyan-dd:#00707d;
+  --mi-flamingo:#ff7aa2; --mi-ink:#1a1030; --mi-paper:#f6f2ff;
+  --mi-line:linear-gradient(90deg,#9b5cff 0,#7b3fe4 30%,#3fa6ee 68%,#22e3f0 100%);
+  --mi-line-glow:0 0 6px rgba(34,227,240,.45),0 0 2px rgba(155,92,255,.5);
+
+  --t-ui:"Jost","Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --t-disp:"Bodoni Moda",Didot,Georgia,serif; --t-disp-n:"Bodoni Moda",Didot,Georgia,serif;
+  --t-plate-font:"Jost","Inter",system-ui,sans-serif;
+  --t-r:18px; --t-r-s:13px; --t-r-xs:9px; --t-r-b:16px; --t-r-p:18px; --t-inset:6px;
+
+  /* fondo: terrazo violeta profundo con resplandor cian y morado muy tenue */
+  --t-night:#1d0e3a;
+  --t-body:radial-gradient(90% 50% at 100% 0%,rgba(34,227,240,.10),rgba(34,227,240,0) 62%),radial-gradient(90% 55% at 0% 100%,rgba(155,92,255,.16),rgba(155,92,255,0) 60%),url("img/miami/noche.jpg") 0 0/512px 512px,#1d0e3a;
+  --t-on:#f3eeff; --t-on-2:#cbbdf0; --t-on-ts:0 1px 1px rgba(10,4,24,.7);
+  --t-brand:#f6f2ff; --t-brand-ts:0 1px 0 rgba(10,4,24,.8),0 0 12px rgba(155,92,255,.35);
+
+  /* barras: vidrio esmerilado violeta con canto claro arriba */
+  --t-bar:linear-gradient(180deg,rgba(255,255,255,.13) 0,rgba(255,255,255,.05) 46%,rgba(255,255,255,0) 54%,rgba(8,2,22,.30) 100%),linear-gradient(0deg,rgba(42,20,80,.82),rgba(42,20,80,.82)),url("img/miami/noche.jpg") 0 0/512px 512px,#2a1450;
+  --t-bar-edge:inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(8,2,22,.75),inset 0 0 0 1px rgba(190,160,255,.10);
+  /* listón: línea de luz morado→cian */
+  --t-trim:var(--mi-line);
+  --t-trim-sh:var(--mi-line-glow);
+  --t-metal-c:#cbbdf0;
+
+  /* paneles: vidrio blanco lila esmerilado con canto */
+  --t-paper:#f6f2ff;
+  --t-panel:linear-gradient(160deg,rgba(255,255,255,.97) 0,rgba(250,248,255,.93) 48%,rgba(238,232,252,.95) 100%),url("img/miami/caliza.jpg") 0 0/512px 512px,#f4f0ff;
+  --t-panel-edge:inset 0 1px 0 #fff,inset 1px 0 0 rgba(255,255,255,.85),inset 0 -2px 0 rgba(123,63,228,.16),inset -1px 0 0 rgba(123,63,228,.10),0 0 0 1px rgba(20,8,41,.30);
+  --t-ink:#1a1030; --t-ink-2:#4a3d66; --t-ink-3:#5e5280;
+  --t-hair:rgba(58,31,110,.18); --t-hair-s:#ddd5f0; --t-hair-d:rgba(203,189,240,.22); --t-hl:rgba(255,255,255,.85);
+  --t-link:#5b25c9; --t-link-d:#8fefff;
+  --t-pwell:linear-gradient(180deg,rgba(58,31,110,.08),rgba(58,31,110,.02) 14px),#ece6fa;
+  --t-pwell-sh:inset 0 2px 3px rgba(42,20,80,.18),inset 0 0 0 1px rgba(42,20,80,.10),0 1px 0 #fff;
+  --t-field:linear-gradient(180deg,rgba(58,31,110,.06),rgba(58,31,110,0) 12px),#fdfcff;
+  --t-field-sh:inset 0 2px 3px rgba(42,20,80,.16),inset 0 0 0 1px rgba(42,20,80,.20),0 1px 0 #fff;
+  --t-focus:#5b25c9; --t-focus-d:#22e3f0; --t-focus-ring:rgba(123,63,228,.22); --t-check:#00808f; --t-acc:#00a3b5;
+
+  /* botón principal: esmalte morado→cian con brillo de vidrio y luz LED */
+  --t-btn:linear-gradient(180deg,rgba(255,255,255,.34) 0,rgba(255,255,255,.12) 44%,rgba(255,255,255,0) 52%,rgba(10,0,40,.20) 100%),linear-gradient(100deg,#6b34e0 0,#4a52d8 48%,#007f8e 100%),#4a3fc8;
+  --t-btn-bevel:inset 0 1px 0 rgba(255,255,255,.55),inset 1px 0 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(10,0,40,.35),inset -1px 0 0 rgba(10,0,40,.18),0 0 0 1px rgba(20,6,50,.75),0 0 14px -4px rgba(34,227,240,.55);
+  --t-btn-press:linear-gradient(180deg,rgba(10,0,40,.30),rgba(10,0,40,.06) 45%,rgba(255,255,255,.08)),linear-gradient(100deg,#5f2cd0 0,#3f47c4 48%,#00707d 100%),#3f38b4;
+  --t-btn-press-sh:inset 0 2px 5px rgba(8,0,30,.6),inset 0 0 0 1px rgba(8,0,30,.3),0 0 0 1px rgba(20,6,50,.75),0 0 8px -2px rgba(34,227,240,.6);
+  --t-btn-ink:#ffffff; --t-btn-ts:0 1px 1px rgba(8,0,30,.55);
+
+  /* teclas sobre panel claro: vidrio blanco con canto */
+  --t-key:linear-gradient(180deg,#ffffff 0,#f7f4ff 55%,#ebe5fa 100%);
+  --t-key-edge:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(58,31,110,.18),0 0 0 1px rgba(42,20,80,.24);
+  --t-key-ts:0 1px 0 #fff;
+  --t-key-press:linear-gradient(180deg,#e2daf6,#efeafd);
+  --t-key-press-sh:inset 0 2px 3px rgba(42,20,80,.28),0 0 0 1px rgba(42,20,80,.24);
+  /* teclas sobre el fondo violeta: vidrio violeta con canto */
+  --t-gkey:linear-gradient(180deg,rgba(255,255,255,.16) 0,rgba(255,255,255,.06) 48%,rgba(255,255,255,0) 52%,rgba(0,0,0,.16) 100%),#3a1f6e;
+  --t-gkey-edge:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(8,2,22,.6),0 0 0 1px rgba(8,2,22,.75);
+  --t-gkey-ink:#f6f2ff; --t-gkey-ts:0 -1px 0 rgba(8,2,22,.6);
+  --t-gkey-press-sh:inset 0 2px 5px rgba(8,2,22,.75),0 0 0 1px rgba(8,2,22,.75);
+  --t-well:linear-gradient(180deg,rgba(0,0,0,.40),rgba(0,0,0,.18)),#170a30;
+  --t-well-sh:inset 0 2px 4px rgba(4,0,14,.8),inset 0 0 0 1px rgba(4,0,14,.7),0 1px 0 rgba(255,255,255,.10);
+  /* activo: tecla de vidrio cian iluminada */
+  --t-lit:linear-gradient(180deg,rgba(255,255,255,.55) 0,rgba(255,255,255,.18) 44%,rgba(255,255,255,0) 52%,rgba(0,60,80,.16) 100%),#22d6e6;
+  --t-lit-edge:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(0,70,90,.35),0 0 0 1px rgba(0,80,100,.65),0 0 10px -2px rgba(34,227,240,.65);
+  --t-lit-ink:#120626; --t-lit-ts:0 1px 0 rgba(255,255,255,.45); --t-lit-ink-l:#22e3f0;
+  --t-tab-on:linear-gradient(180deg,rgba(0,0,0,.30),rgba(0,0,0,.10));
+  --t-tab-on-sh:inset 0 2px 4px rgba(4,0,14,.6),inset 0 0 0 1px rgba(34,227,240,.22),0 1px 0 rgba(255,255,255,.10);
+  --t-led:#22e3f0; --t-led-glow:0 0 8px rgba(34,227,240,.75); --t-led-ink:#5cecf6;
+
+  /* botones redondos: vidrio violeta ahumado con aro de luz */
+  --t-icon-bw:0px;
+  --t-icon:radial-gradient(120% 100% at 30% 18%,rgba(255,255,255,.30) 0,rgba(255,255,255,0) 46%),radial-gradient(100% 100% at 50% 60%,#4b2a8c,#24104a 85%);
+  --t-icon-edge:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 2px rgba(8,2,22,.5),inset 0 0 0 1px rgba(34,227,240,.30),0 0 0 1px rgba(8,2,22,.8),0 3px 6px rgba(4,0,14,.5);
+  --t-icon-press-sh:inset 0 2px 5px rgba(4,0,14,.75),inset 0 0 0 1px rgba(34,227,240,.4),0 0 0 1px rgba(8,2,22,.8);
+  --t-icon-ink:#eafcff;
+  --t-badge:linear-gradient(180deg,#7cf3fa,#16cfe0); --t-badge-ink:#120626;
+  --t-badge-edge:inset 0 1px 0 rgba(255,255,255,.6),0 0 0 1.5px #1d0e3a,0 0 8px rgba(34,227,240,.6);
+  /* descuento: placa flamingo esmaltada */
+  --t-tag:linear-gradient(180deg,rgba(255,255,255,.45) 0,rgba(255,255,255,.12) 46%,rgba(255,255,255,0) 54%,rgba(120,10,50,.12) 100%),#ff7aa2;
+  --t-tag-edge:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -1px 0 rgba(120,10,50,.3),0 0 0 1px rgba(110,10,48,.55);
+  --t-tag-ink:#2a0a1c; --t-tag-ts:0 1px 0 rgba(255,255,255,.4);
+
+  --t-stage:radial-gradient(60% 55% at 50% 38%,#fff,rgba(255,255,255,0) 72%),linear-gradient(180deg,#fbfaff,#ece7f8);
+  --t-glare:linear-gradient(118deg,rgba(255,255,255,.4) 0,rgba(255,255,255,.08) 22%,rgba(255,255,255,0) 23%,rgba(255,255,255,0) 60%,rgba(255,255,255,.12) 61%,rgba(255,255,255,0) 74%);
+  --t-stage-edge:inset 0 0 0 1px rgba(123,63,228,.25),inset 0 0 0 2px rgba(255,255,255,.5),inset 0 6px 10px -6px rgba(42,20,80,.22);
+  --t-plate-edge:0 0 0 1px rgba(8,2,22,.8),inset 0 0 0 1px rgba(255,255,255,.12),0 4px 10px -2px rgba(4,0,14,.6);
+  --t-plate-frame:inset 0 0 0 1px rgba(255,255,255,.28),inset 0 1px 0 rgba(255,255,255,.5);
+  --t-plate-glare:linear-gradient(125deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 36%);
+  --t-plate-on:0 0 0 2px #1d0e3a,0 0 0 4px #22e3f0,0 0 16px rgba(34,227,240,.55);
+  --t-plate-press:0 0 0 1px rgba(8,2,22,.8),0 1px 2px rgba(4,0,14,.5);
+
+  /* dentro de la tienda: caliza lila clara */
+  --t-room:radial-gradient(80% 22% at 50% 0%,rgba(255,255,255,.9),rgba(255,255,255,0) 72%),linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0)),url("img/miami/caliza.jpg") 0 0/512px 512px,#f2eefb;
+  --t-room-ink:#1a1030;
+  --t-sh1:0 1px 1px rgba(10,4,30,.22),0 3px 8px -2px rgba(10,4,30,.34);
+  --t-sh2:0 1px 2px rgba(10,4,30,.20),0 10px 24px -10px rgba(10,4,30,.48),0 24px 40px -24px rgba(10,4,30,.40);
+  --t-sh3:0 2px 3px rgba(10,4,30,.24),0 18px 30px -10px rgba(10,4,30,.55),0 36px 60px -24px rgba(10,4,30,.5);
+}
+/* ===================== NÚCLEO COMÚN (tech) =====================
+   Todo se dibuja con variables --t-* que define cada variante.
+   Una sola luz: arriba a la izquierda → brillo arriba/izq., canto oscuro abajo/der.,
+   sombra proyectada hacia abajo. Sin backdrop-filter en listas. Texto mínimo 14 px. */
+@font-face{font-family:"Inter";src:url("fonts/inter-regular.woff") format("woff");font-weight:400;font-display:swap}
+@font-face{font-family:"Inter";src:url("fonts/inter-medium.woff") format("woff");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url("fonts/inter-semibold.woff") format("woff");font-weight:600 800;font-display:swap}
+
+:root{
+  /* las variables heredadas de styles.css dejan de ser doradas */
+  --brass:var(--t-metal-c); --brass-d:var(--t-ink-2); --gold-1:var(--t-lit-ink-l); --gold-2:var(--t-acc); --gold-3:var(--t-ink-2);
+  --lx-champ:var(--t-on); --lx-champ-2:var(--t-on-2); --lx-gold-dk:var(--t-ink-2);
+  --lx-gold-line:var(--t-hair); --lx-hair-gold:var(--t-hair);
+  --lx-gold:var(--t-trim); --lx-gold-h:var(--t-trim);
+  --lx-ink:var(--t-ink); --lx-ink-2:var(--t-ink-2); --lx-ink-muted:var(--t-ink-2);
+  --lx-paper:var(--t-paper); --lx-paper-2:var(--t-paper);
+  --paper:var(--t-paper); --ink:var(--t-ink); --ink-muted:var(--t-ink-2); --line:var(--t-hair-s);
+  --m2-ink:var(--t-ink); --m2-mute:var(--t-ink-2);
+  --lx-calacatta:var(--t-panel); --lx-travertine:var(--t-panel); --lx-nero:var(--t-body);
+  --lx-sh-1:var(--t-sh1); --lx-sh-2:var(--t-sh2);
+  --on-night:var(--t-on); --on-night-muted:var(--t-on-2);
+  --night:var(--t-night); --night-2:var(--t-night);
+  --r:var(--t-r);
+  --shadow:var(--t-sh2);
+}
+
+html{background:var(--t-night)}
+body{background:var(--t-body);color:var(--t-on);font-family:var(--t-ui);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+@media (min-width:900px){body{background-attachment:fixed}}
+button,input,select,textarea{font-family:inherit}
+a{color:var(--t-link-d)}
+.sheet a:not(.btn),.card a:not(.btn),.caja-info a:not(.btn),.counter-info a:not(.btn){color:var(--t-link)}
+
+/* ---------- Texto ---------- */
+.small,.card .small,.sheet .small{font-size:14px}
+.muted{color:var(--t-on-2)}
+.card .muted,.sheet .muted,.quote .muted,.empty .muted,.auth-panel .muted,.caja-info .muted,.counter-info .muted,.group-card .muted{color:var(--t-ink-2)}
+.view-title{color:var(--t-on);text-shadow:var(--t-on-ts)}
+.view-title::after{height:2px;width:48px;background:var(--t-trim);box-shadow:var(--t-trim-sh)}
+.section-title{color:var(--t-on);text-shadow:var(--t-on-ts)}
+.lede{color:var(--t-on-2)}
+:focus-visible{outline:2.5px solid var(--t-focus-d);outline-offset:3px}
+.sheet :focus-visible,.card :focus-visible,.caja-info :focus-visible,.counter-info :focus-visible,.interior :focus-visible,.c3-card :focus-visible{outline:2.5px solid var(--t-focus);outline-offset:3px}
+
+/* ---------- Barra demo ---------- */
+.demo-bar{background:var(--t-bar);color:var(--t-on-2);font-size:14px;letter-spacing:.01em;border-bottom:0;box-shadow:var(--t-bar-edge)}
+
+/* ---------- Segmentados: canal hundido con teclas en relieve ---------- */
+.seg,.demo-bar .seg,.fin-seg{border-radius:var(--t-r-s);padding:3px;gap:3px;background:var(--t-well);box-shadow:var(--t-well-sh)}
+.seg button,.fin-seg button{border-radius:calc(var(--t-r-s) - 2px);font-size:14px;letter-spacing:.06em;font-weight:500;color:var(--t-gkey-ink);text-shadow:var(--t-gkey-ts);
+  background:var(--t-gkey);box-shadow:var(--t-gkey-edge)}
+.seg button.on,.fin-seg button.on{color:var(--t-lit-ink);text-shadow:var(--t-lit-ts);background:var(--t-lit);box-shadow:var(--t-lit-edge)}
+.card .seg,.sheet .seg,.auth .seg{color:var(--t-gkey-ink)}
+
+/* ---------- Encabezado ---------- */
+header.top{background:var(--t-bar);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--t-bar-edge),0 6px 14px -6px rgba(0,0,0,.55)}
+header.top::after{height:2px;bottom:-2px;opacity:1;background:var(--t-trim);box-shadow:var(--t-trim-sh)}
+.brand,.top h1,.top h1.neon{background:none;-webkit-text-fill-color:currentColor;color:var(--t-brand);font-family:"Bodoni Moda",Didot,Georgia,serif;
+  text-shadow:var(--t-brand-ts);animation:none}
+.icon-btn{border:var(--t-icon-bw,0) solid transparent;color:var(--t-icon-ink);background:var(--t-icon);box-shadow:var(--t-icon-edge);border-radius:50%}
+.icon-btn:active{transform:translateY(1px);background:var(--t-icon-press,var(--t-icon));box-shadow:var(--t-icon-press-sh)}
+.icon-btn .ico,.icon-btn svg{filter:var(--t-icon-f,none)}
+.icon-btn:not(:has(svg))::before{background:var(--t-icon-ink)}
+
+/* ---------- Contadores ---------- */
+.badge,.icon-btn .badge,.sb .sn,.sb.lm .sn{min-width:22px;height:22px;padding:0 6px;border-radius:11px;font:600 14px/22px var(--t-ui);letter-spacing:0;
+  color:var(--t-badge-ink);-webkit-text-fill-color:var(--t-badge-ink);text-shadow:none;background:var(--t-badge);box-shadow:var(--t-badge-edge)}
+
+/* ---------- Barras inferiores ---------- */
+.storebar,.tabs{background:var(--t-bar);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--t-bar-edge),0 -10px 22px -8px rgba(0,0,0,.45)}
+.storebar::before,.tabs::before{height:2px;top:-1px;opacity:1;background:var(--t-trim);box-shadow:var(--t-trim-sh)}
+.sb,.tab{color:var(--t-on);text-shadow:var(--t-on-ts);font-size:14px;letter-spacing:.01em;text-transform:none;font-weight:500}
+.sb.on,.tab.on{color:var(--t-on);border-radius:var(--t-r-s);background:var(--t-tab-on);box-shadow:var(--t-tab-on-sh)}
+.sb::after,.tab.on::after{background:var(--t-led);height:2px;box-shadow:var(--t-led-glow);border-radius:2px}
+.tab{min-height:56px;gap:4px;padding:6px 2px;color:var(--t-on-2)}
+.tab .ti{width:24px;height:24px;background:var(--t-on-2)}
+.tab .ti:has(svg){background:none;-webkit-mask:none;mask:none;font-size:inherit;display:grid;place-items:center;color:var(--t-on-2)}
+.tab .ti svg{width:24px;height:24px}
+.tab.on .ti:has(svg){color:var(--t-led-ink)}
+
+/* ---------- Botón principal ---------- */
+.btn,.btn.coral,.btn.gold{color:var(--t-btn-ink);background:var(--t-btn);border:0;font-family:var(--t-ui);font-size:14px;letter-spacing:.08em;font-weight:600;
+  text-shadow:var(--t-btn-ts);box-shadow:var(--t-btn-bevel),var(--t-sh1);border-radius:var(--t-r-b);
+  transition:transform .08s ease-out,box-shadow .08s ease-out,filter .15s ease-out}
+@media (hover:hover){.btn:hover:not(:disabled){filter:brightness(1.04)}}
+.btn:active:not(:disabled),.btn.coral:active,.btn.gold:active{transform:translateY(2px);filter:none;background:var(--t-btn-press);box-shadow:var(--t-btn-press-sh)}
+.btn:disabled{opacity:.55;filter:saturate(.4)}
+.btn.sm{font-size:14px;letter-spacing:.05em;min-height:44px}
+.btn .ico{width:18px;height:18px;vertical-align:-3px;margin-right:7px;stroke-width:1.6}
+
+/* secundario sobre fondo oscuro: tecla de vidrio */
+.btn.ghost{color:var(--t-gkey-ink);background:var(--t-gkey);text-shadow:var(--t-gkey-ts);box-shadow:var(--t-gkey-edge),var(--t-sh1)}
+.btn.ghost:active:not(:disabled){transform:translateY(2px);box-shadow:var(--t-gkey-press-sh)}
+/* secundario sobre panel: tecla del mismo material del panel */
+.sheet .btn.ghost,.card .btn.ghost,.caja-info .btn.ghost,.counter-info .btn.ghost,.interior .btn.ghost,.b3-sheet .btn.ghost,.c3-card .btn.ghost{
+  color:var(--t-ink);text-shadow:var(--t-key-ts);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+.sheet .btn.ghost:active:not(:disabled),.card .btn.ghost:active:not(:disabled),.caja-info .btn.ghost:active:not(:disabled),.counter-info .btn.ghost:active:not(:disabled),.interior .btn.ghost:active:not(:disabled){
+  transform:translateY(2px);background:var(--t-key-press);box-shadow:var(--t-key-press-sh)}
+
+.btn.wa{color:#f4fbf6;text-shadow:0 -1px 0 rgba(0,0,0,.45);
+  background:linear-gradient(180deg,rgba(255,255,255,.26) 0,rgba(255,255,255,.06) 45%,rgba(0,0,0,.14) 100%),#13724f;
+  box-shadow:inset 0 1px 0 rgba(220,255,236,.45),inset 0 -2px 0 rgba(0,40,20,.4),0 0 0 1px rgba(0,30,15,.6),var(--t-sh1)}
+.btn.wa:active{transform:translateY(2px);background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,0)),#11603f;box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 0 0 1px rgba(0,30,15,.6)}
+.btn.dv-del,.btn.dv-del-yes{color:#fff4f2;text-shadow:0 -1px 0 rgba(0,0,0,.45);
+  background:linear-gradient(180deg,rgba(255,255,255,.24) 0,rgba(255,255,255,.05) 45%,rgba(0,0,0,.16) 100%),#a32035;
+  box-shadow:inset 0 1px 0 rgba(255,220,226,.45),inset 0 -2px 0 rgba(60,0,10,.4),0 0 0 1px rgba(50,0,8,.6),var(--t-sh1)}
+
+/* teclas pequeñas: copiar, cantidad, flechas, cerrar */
+.copy,.qbtn,.b3-nav button,.b3-qty,.m2-nav button,.c3-nav button,.sheet-x,.m2-x,.mini-x{color:var(--t-ink);text-shadow:var(--t-key-ts);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+.copy{font-size:14px;letter-spacing:.04em}
+.copy:active,.qbtn:active,.b3-nav button:active:not(:disabled),.c3-nav button:active:not(:disabled),.sheet-x:active,.m2-nav button:active:not(:disabled){transform:translateY(1px);background:var(--t-key-press);box-shadow:var(--t-key-press-sh)}
+.b3-qty button{color:var(--t-ink)}
+.sheet-x{font-size:14px}
+.sheet-x:focus-visible{outline-color:var(--t-focus)}
+.view-back,.counter-back,.counter-back.c3-back,.vf3-back{color:var(--t-gkey-ink);text-shadow:var(--t-gkey-ts);font-size:14px;font-family:var(--t-ui);
+  background:var(--t-gkey);box-shadow:var(--t-gkey-edge),var(--t-sh1);border-radius:var(--t-r-s)}
+.view-back:active,.counter-back:active,.vf3-back:active{transform:translateY(1px);background:var(--t-gkey);box-shadow:var(--t-gkey-press-sh)}
+
+/* ---------- Campos hundidos ---------- */
+label.f{font-size:14px;letter-spacing:.06em;color:var(--t-ink-2)}
+.auth label.f{color:var(--t-on-2)}
+.in,select.in,textarea.in,.m2-in{border:0;border-radius:var(--t-r-s);color:var(--t-ink);font-size:16px;background:var(--t-field);box-shadow:var(--t-field-sh)}
+.in::placeholder,.m2-in::placeholder{color:var(--t-ink-3)}
+.in:focus,select.in:focus,textarea.in:focus,.m2-in:focus{outline:none;border:0;box-shadow:var(--t-field-sh),0 0 0 2px var(--t-focus),0 0 0 5px var(--t-focus-ring)}
+.auth .in{color:var(--t-on);background:var(--t-well);box-shadow:var(--t-well-sh)}
+.auth .in::placeholder{color:var(--t-on-2)}
+input[type=checkbox],input[type=radio],.lm-toggle input{accent-color:var(--t-check)}
+
+/* ---------- Paneles ---------- */
+.card,.group-card{color:var(--t-ink);border-radius:var(--t-r);background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh2)}
+.card h3,.card h2{color:var(--t-ink)}
+.sheet .card{background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+.empty{color:var(--t-on);background:var(--t-gkey);box-shadow:var(--t-gkey-edge),var(--t-sh1)}
+.empty b{color:var(--t-on)}
+.sheet .empty,.card .empty,.caja-info .empty{background:var(--t-pwell);color:var(--t-ink-2)!important;box-shadow:var(--t-pwell-sh)}
+.thumb{background:var(--t-key);box-shadow:var(--t-key-edge)}
+.thumb .ico{color:var(--t-ink-2)}
+.thumb:has(.ico){font-size:inherit;display:grid;place-items:center}
+.thumb:has(.ico)::before{display:none}
+hr.s{border:0;height:2px;background:linear-gradient(180deg,var(--t-hair),var(--t-hl))}
+.cart-row,.rl,.bank-row,.quote .ln{border-bottom:0;box-shadow:0 1px 0 var(--t-hair),0 2px 0 var(--t-hl)}
+.order-g .order-row{border-color:var(--t-hair)}
+
+/* placas de estado */
+.pill{font-size:14px;letter-spacing:.03em;padding:4px 9px;border-radius:var(--t-r-xs);color:var(--t-ink);text-shadow:none;background:var(--t-key);box-shadow:var(--t-key-edge)}
+.pill.green{color:#0d4a30;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),#d3ebde}
+.pill.amber{color:#5e3b00;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),#f3e3c2}
+.pill.red{color:#7a1322;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 55%),#f3d6d9}
+.pill.coral{color:var(--t-ink);background:var(--t-key)}
+
+/* chips */
+.chip,.fchip,.m2-chip,.m2-so{font-size:14px;letter-spacing:.02em}
+.chip,.fchip{color:var(--t-gkey-ink);text-shadow:var(--t-gkey-ts);background:var(--t-gkey);box-shadow:var(--t-gkey-edge)}
+.card .chip,.sheet .chip,.counter-info .chip,.interior .chip,.m2-chip{color:var(--t-ink);text-shadow:var(--t-key-ts);background:var(--t-key);box-shadow:var(--t-key-edge)}
+.chip.on,.card .chip.on,.sheet .chip.on,.counter-info .chip.on,.interior .chip.on,.m2-chip.on{color:var(--t-lit-ink);text-shadow:var(--t-lit-ts);background:var(--t-lit);box-shadow:var(--t-lit-edge)}
+.turns button{box-shadow:var(--t-key-edge);background:var(--t-key);color:var(--t-ink)}
+.turns button.on{color:var(--t-lit-ink);background:var(--t-lit);box-shadow:var(--t-lit-edge)}
+.steps span.on,.dots span.on{background:var(--t-led)}
+.sw{box-shadow:inset 0 0 0 1px var(--t-hair)}
+
+/* ---------- Hojas ---------- */
+.backdrop{background:rgba(6,8,10,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet{background:var(--t-panel);color:var(--t-ink);border-radius:calc(var(--t-r) + 6px) calc(var(--t-r) + 6px) 0 0;box-shadow:var(--t-panel-edge),0 -18px 40px -12px rgba(0,0,0,.6)}
+.sheet::before{height:2px;top:-4px;background:var(--t-trim);box-shadow:var(--t-trim-sh)}
+.sheet h2{color:var(--t-ink);text-shadow:none}
+.sheet h2::after{height:2px;background:var(--t-trim);box-shadow:none}
+.sheet .grab{width:46px;height:5px;border-radius:3px;background:var(--t-hair);box-shadow:inset 0 1px 2px rgba(0,0,0,.25),0 1px 0 var(--t-hl)}
+.sheet:has([data-m]) .stack>.btn{display:flex;align-items:center;color:var(--t-ink);text-shadow:none;font-size:16px;padding-left:4px;letter-spacing:.02em;font-weight:500;
+  background:transparent;box-shadow:0 1px 0 var(--t-hair),0 2px 0 var(--t-hl);border-bottom:0;filter:none;border-radius:0}
+.sheet:has([data-m]) .stack>.btn::first-letter{font-size:inherit}
+.sheet:has([data-m]) .stack>.btn .ico{color:var(--t-ink-2);width:20px;height:20px;margin-right:12px;vertical-align:-4px}
+.sheet:has([data-m]) .stack>.btn.wa{color:#0f4a32;background:transparent}
+.sheet:has([data-m]) .stack>.btn:active{transform:none;background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+#to-split::first-letter,#inv2x1::first-letter,#new-pkg::first-letter,#pp-gal::first-letter,#pp-meas::first-letter,
+.btn[data-gal]::first-letter,.btn[data-meas]::first-letter,.btn[data-lm]::first-letter{font-size:inherit}
+
+/* aviso */
+.toast{font-size:15px;color:var(--t-on);text-shadow:none;border-radius:var(--t-r);border:0;background:var(--t-bar);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--t-bar-edge),var(--t-sh3)}
+
+/* ---------- Banners ---------- */
+.lm-banner,.live,.capture{background:var(--t-bar);border-radius:var(--t-r);box-shadow:var(--t-bar-edge),var(--t-sh2);color:var(--t-on)}
+.lm-banner .bolt{font-size:inherit;width:auto;height:auto;background:none;color:var(--t-led-ink)}
+.lm-banner .bolt .ico{width:26px;height:26px}
+.lm-banner b{color:var(--t-on);text-shadow:none}
+.lm-banner span{font-size:14px;color:var(--t-on-2)}
+.lm-banner .go{font-size:14px;color:var(--t-led-ink)}
+.lmtag .ico{width:16px;height:16px}
+.capture .cam:has(svg){font-size:inherit;background:none;-webkit-mask:none;mask:none;width:auto;height:auto}
+.capture .cam .ico{width:44px;height:44px;color:var(--t-on)}
+.capture .small .ico,.capture span .ico{width:18px;height:18px;vertical-align:-4px;margin-right:6px;color:var(--t-on)}
+
+/* ---------- Catálogo ---------- */
+.c3-card{border-radius:var(--t-r);background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh2)}
+.c3-stage{margin:var(--t-inset) var(--t-inset) 0;border-radius:calc(var(--t-r) - var(--t-inset)) calc(var(--t-r) - var(--t-inset)) 0 0;background:var(--t-stage)}
+.c3-stage::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;background:var(--t-glare);box-shadow:var(--t-stage-edge)}
+.c3-stage::after{height:2px;background:var(--t-trim);box-shadow:var(--t-trim-sh)}
+.c3-stage img{box-shadow:0 0 0 1px rgba(0,0,0,.06),0 16px 26px -16px rgba(0,0,0,.45),0 2px 4px rgba(0,0,0,.08)}
+.c3-info{color:var(--t-ink)}
+.c3-title{font-family:var(--t-disp);color:var(--t-ink)}
+.c3-clp b{font-family:var(--t-disp-n);color:var(--t-ink)}
+.c3-dtitle{font-family:var(--t-disp)}
+.c3-brand,.c3-lbl,.m2-rl,.m2-brand,.c3-acg,.c3-calc summary>span:first-child,.c3-ol em,.c3-shl,.c3-link,.b3-brand{color:var(--t-ink-2)!important}
+.c3-count{color:var(--t-ink-2)}
+.c3-count b{color:var(--t-ink)}
+.c3-store,.c3-usd{color:var(--t-ink-2)}
+.c3-usd b{color:var(--t-ink)}
+.c3-calc{border-top-color:var(--t-hair)}
+.c3-bl{border-bottom-color:var(--t-hair)}
+.c3-more{backdrop-filter:none;-webkit-backdrop-filter:none;color:var(--t-btn-ink);background:var(--t-btn);box-shadow:var(--t-btn-bevel),var(--t-sh1);text-shadow:var(--t-btn-ts);border-radius:var(--t-r-xs)}
+.c3-badge,.m2-badge{color:var(--t-tag-ink);font-family:var(--t-ui);font-weight:700;background:var(--t-tag);box-shadow:var(--t-tag-edge),2px 4px 8px rgba(0,0,0,.35);text-shadow:var(--t-tag-ts)}
+.c3-badge.c3-2x1,.m2-badge.m2-2x1{color:var(--t-on);background:var(--t-bar);box-shadow:var(--t-bar-edge),2px 4px 8px rgba(0,0,0,.35)}
+.c3-aco small{font-size:14px}
+.c3-ac{box-shadow:var(--t-panel-edge),var(--t-sh2)}
+.c3-dbar{background:var(--t-bar);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:0;box-shadow:var(--t-bar-edge),0 6px 12px -4px rgba(0,0,0,.5)}
+.c3-dsign{color:var(--t-on);text-shadow:none}
+.c3-gal{background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+.c3-gal button{box-shadow:0 0 0 1px var(--t-hair),1px 2px 3px rgba(0,0,0,.2)}
+.c3-gal button.on{box-shadow:0 0 0 2px var(--t-paper),0 0 0 4px var(--t-acc),1px 2px 4px rgba(0,0,0,.3)}
+.counter.c3-detail{background:var(--t-stage)}
+.counter-info.c3-dinfo{background:var(--t-panel);box-shadow:var(--t-panel-edge)}
+.counter-info::before{background:var(--t-trim)}
+.c3-dprice{border-bottom-color:var(--t-hair)}
+.c3-detail .touch-hint{font-size:14px;color:var(--t-ink-2)}
+.c3-detail .item{box-shadow:0 30px 40px -22px rgba(0,0,0,.5),0 0 0 1px rgba(0,0,0,.06)}
+.counter-sign{box-shadow:var(--t-bar-edge)}
+.sizebox{box-shadow:var(--t-pwell-sh);background:var(--t-pwell)}
+.c3-add.m2-done{box-shadow:var(--t-lit-edge)}
+.c3-wa-half{box-shadow:inset 0 0 0 1px var(--t-hair)!important}
+.c3-share{border-top-color:var(--t-hair)}
+.promo2,.match-box,.invite-box{box-shadow:var(--t-pwell-sh);background:var(--t-pwell);border-left:2px solid var(--t-acc)}
+.promo2 b,.rl.share,.b3-vr.b3-share,.b3-vr.b3-share span{color:var(--t-ink)}
+
+/* filtros */
+.m2-ctrl{border-radius:var(--t-r);background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh1)}
+.m2-ctrl::before{background:var(--t-trim)}
+.m2-sort{border-top:0;margin:4px 6px 6px;padding:3px;gap:3px;border-radius:var(--t-r-s);background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+.m2-so{border-radius:calc(var(--t-r-s) - 2px);color:var(--t-ink-2);text-shadow:none}
+.m2-so+.m2-so::before{display:none}
+.m2-so.on{color:var(--t-lit-ink);background:var(--t-lit);box-shadow:var(--t-lit-edge);text-shadow:var(--t-lit-ts)}
+.m2-so.on::after{display:none}
+.c3 .c3-ctrl .m2-sort{border-left:0}
+
+/* mínimo 14 px */
+body .c3-lbl,body .c3 .m2-range .m2-rl,body .m2-rl{font-size:14px;letter-spacing:.02em;text-transform:none;font-weight:600;width:auto;min-width:44px}
+body .c3 .m2-so,body .m2-so{font-size:14px;letter-spacing:0;text-transform:none;min-height:34px;line-height:1.05;padding:2px 0;font-weight:500}
+@media (max-width:599px){body .c3-brandbox{padding:5px 6px 0}body .c3 .m2-range{padding:4px 6px 2px}body .m2-sort{margin:2px 6px 5px}body .c3-count{line-height:1.2}body .c3-status{margin-bottom:4px}body .c3-info{padding-top:6px}body .c3-stage{min-height:180px}}
+body .c3-count{font-size:14px}
+body .c3-brand{font-size:14px;letter-spacing:.08em}
+body .c3-store,body .c3-usd,body .c3-sum,body .c3-bl dt i{font-size:14px}
+body .c3-clp span{font-size:14px;letter-spacing:.02em;text-transform:none}
+body .c3-calc summary>span:first-child{font-size:14px;letter-spacing:.04em}
+body .c3-ol{font-size:14px;letter-spacing:.04em}
+body .c3-ol em{font-size:14px}
+body .c3-bl dt,body .c3-bl dd{font-size:14px}
+body .c3-shl,body #c3half,body .c3-link{font-size:14px}
+body .c3-more{font-size:14px;letter-spacing:.04em;padding:6px 10px}
+#m2pos{display:none!important}.c3-nav{gap:10px}
+
+/* ---------- Bolsa y caja ---------- */
+.b3-photo{background:var(--t-stage);border-radius:var(--t-r-s);box-shadow:var(--t-panel-edge),var(--t-sh2)}
+.b3-photo::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:var(--t-glare);box-shadow:var(--t-stage-edge)}
+.b3-mono{color:var(--t-hair)}
+.b3-tag{color:var(--t-btn-ink);background:var(--t-btn);box-shadow:var(--t-btn-bevel),1px 2px 3px rgba(0,0,0,.3);text-shadow:var(--t-btn-ts)}
+.b3-reg{background:var(--t-bar);box-shadow:var(--t-bar-edge),var(--t-sh1)}
+.b3-gbtn{color:var(--t-gkey-ink);background:var(--t-gkey);box-shadow:var(--t-gkey-edge),var(--t-sh1)}
+.b3-gbtn:active{transform:translateY(1px)}
+.b3-greet.on .b3-gbtn{background:var(--t-lit);color:var(--t-lit-ink)}
+.b3-gico{color:var(--t-on);box-shadow:inset 0 0 0 1px var(--t-hair-d)}
+.b3-plate{background:var(--t-trim)}
+.b3-pick i{box-shadow:inset 0 0 0 1px rgba(0,0,0,.18),0 0 0 2px #fff,0 0 0 3px var(--t-hair)}
+.b3-price{border-top-color:var(--t-hair)}
+.b3-caja .b3-desk,.b3-sign{border-bottom-color:var(--t-hair-d)}
+.b3-rm{text-decoration-color:var(--t-hair)}
+.caja-info{box-shadow:inset 0 1px 0 var(--t-hl),0 -1px 0 var(--t-hair)}
+.bank{box-shadow:var(--t-pwell-sh)}
+.order-box{box-shadow:var(--t-pwell-sh),var(--t-sh1)}
+.receipt-prev{box-shadow:inset 0 0 0 1px var(--t-hair)}
+.rp-pdf{color:var(--t-on)}
+/* boleta: papel térmico real, tinta negra */
+.b3-voucher{background:linear-gradient(180deg,#fefefe,#f6f6f4);color:#16171a}
+.b3-vcols,.b3-vfoot{color:#55575c}
+.bubble,.bubble-wrap .bubble{color:var(--t-ink);background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh2)}
+
+/* ---------- Finanzas ---------- */
+.fin-arw{color:var(--t-icon-ink);border:0;background:var(--t-icon);box-shadow:var(--t-icon-edge)}
+.fin-ptitle{color:var(--t-on);text-shadow:none}
+.fin-today{color:var(--t-led-ink)}
+.fin-tip{background:var(--t-bar);color:var(--t-on);box-shadow:var(--t-bar-edge),var(--t-sh2)}
+
+.pp-ok{display:grid;place-items:center;margin:6px auto 8px;width:64px;height:64px;border-radius:50%;color:#13724f;background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+.pp-ok .ico{width:38px;height:38px;stroke-width:1.6}
+.ico{flex:none}
+.small .ico,.muted .ico{width:16px;height:16px;vertical-align:-3px;margin-right:4px}
+.lm-toggle span .ico{width:18px;height:18px;vertical-align:-3px;margin-right:6px;color:var(--t-ink-2)}
+.ai .ico{width:18px;height:18px;color:#13724f}
+.lm-toggle,.promo-t{box-shadow:var(--t-pwell-sh);background:var(--t-pwell)}
+
+/* ---------- Barra de tiendas: placas cuadradas con foto ---------- */
+.storebar{padding:8px 0 calc(8px + var(--safe-b))}
+.storebar-in{gap:8px;padding:0 10px;justify-content:flex-start}
+@media (min-width:900px){.storebar-in{justify-content:safe center}}
+.storebar .sb{flex:0 0 auto;width:clamp(92px,24vw,124px);height:clamp(92px,24vw,124px);min-width:0;min-height:0;padding:0;gap:0;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;border-radius:var(--t-r-p);overflow:hidden;isolation:isolate;
+  background:#111;box-shadow:var(--t-plate-edge)}
+.storebar .sb::after{display:none}
+.storebar .sb::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;pointer-events:none;box-shadow:var(--t-plate-frame)}
+.storebar .sbn{position:relative;z-index:2}
+.storebar .sb .si{position:absolute;inset:0;z-index:-1;width:auto;height:auto;font-size:0}
+.storebar .sb .si img{width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 40%;box-shadow:none!important;background:#eee}
+.storebar .sb .si .mono{width:100%;height:100%;border-radius:0;box-shadow:none!important;font-size:34px;display:grid;place-items:center;padding-bottom:22px;background:var(--t-bar);color:var(--t-on)}
+.storebar .sb .si::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(8,9,11,.6) 66%,rgba(8,9,11,.93) 100%),var(--t-plate-glare)}
+.storebar .sbn{display:block;padding:0 6px 8px;text-align:center;font-size:14px;line-height:1.12;font-weight:600;letter-spacing:.01em;color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 6px rgba(0,0,0,.6);hyphens:auto;overflow-wrap:anywhere;font-family:var(--t-plate-font)}
+.storebar .sb.on{box-shadow:var(--t-plate-on)}
+.storebar .sb:active{transform:translateY(2px);box-shadow:var(--t-plate-press)}
+.storebar .sb.empty{opacity:.7}
+
+/* ---------- Vitrina con afiches (vf3) ---------- */
+.vf3-screen{background:var(--t-night)}
+.vf3-sign{box-shadow:inset 0 -1px 0 var(--t-hair-d),inset 0 1px 0 rgba(255,255,255,.06)}
+.vf3-paper{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);background:linear-gradient(180deg,#ffffff,#f3f3f1)}
+.vf3-brand{color:#55575c;font-family:var(--t-ui)}
+.vf3-price b{font-family:var(--t-disp-n);color:#121316}
+.vf3-badge,.vf3-vbadge{color:var(--t-tag-ink);background:var(--t-tag);box-shadow:var(--t-tag-edge),0 2px 6px rgba(0,0,0,.3);text-shadow:var(--t-tag-ts);font-family:var(--t-ui);border-radius:var(--t-r-xs)}
+.vf3-badge.vf3-2x1,.vf3-vbadge.vf3-2x1{color:#fff;background:#141518;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.vf3-tape{background:linear-gradient(180deg,rgba(250,250,250,.7),rgba(226,228,230,.6))}
+.vf3-flyer:focus-visible{outline-color:var(--t-focus-d)}
+.vf3-empty{background:var(--t-panel);color:var(--t-ink);box-shadow:var(--t-panel-edge),0 10px 24px -10px rgba(0,0,0,.5)}
+.vf3-door{background:var(--t-bar);box-shadow:var(--t-bar-edge),inset 0 2px 0 -1px var(--t-hair-d)}
+.vf3-pname{color:var(--t-on)}
+.vf3-pnote{color:var(--t-on-2);font-size:14px}
+.vf3-viewer{background:var(--t-body);color:var(--t-on)}
+.vf3-vbar{background:var(--t-bar);backdrop-filter:none;-webkit-backdrop-filter:none}
+.vf3-vfig{box-shadow:0 0 0 1px rgba(0,0,0,.2),0 0 0 8px var(--t-paper),0 0 0 9px var(--t-hair),0 30px 60px -24px rgba(0,0,0,.7)}
+.vf3-vbrand{color:var(--t-on-2);font-size:14px}
+.vf3-vtitle{color:var(--t-on)}
+.vf3-vprice b{color:var(--t-on)}
+.vf3-vprice s,.vf3-vcl{color:var(--t-on-2)}
+
+/* ---------- Caminata ---------- */
+html body .mw-bar i{background:var(--t-led)}
+html body .mw-btn:focus-visible,html body .mw-poster:focus-visible{outline-color:var(--t-focus-d)}
+
+/* ---------- Selector Mujer / Hombre (gender.css carga después: más especificidad) ---------- */
+html body .gask-h{font-family:var(--t-disp)}
+html body .gask-p{color:var(--t-ink-2)}
+html body .gplate{border-radius:var(--t-r);box-shadow:var(--t-plate-edge)}
+html body .gplate::after{background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(8,9,11,.82) 100%),var(--t-plate-glare)}
+html body .gplate:active{transform:translateY(2px);box-shadow:var(--t-plate-press)}
+html body .gsel{border-radius:var(--t-r-s);background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+html body .gsel-b{border-radius:calc(var(--t-r-s) - 2px);font:600 16px/1 var(--t-ui);color:var(--t-ink-2)}
+html body .gsel-b.on{color:var(--t-lit-ink);background:var(--t-lit);box-shadow:var(--t-lit-edge);text-shadow:var(--t-lit-ts)}
+html body .pubpick{border-radius:var(--t-r);background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+html body .stnote,html body .gpick-help{color:var(--t-ink-2)}
+html body .stp{border-radius:var(--t-r-s);box-shadow:var(--t-plate-edge)}
+html body .stp.on{box-shadow:0 0 0 2px var(--t-paper),0 0 0 4px var(--t-acc),var(--t-sh1)}
+html body .stp.on::before{background:var(--t-lit);color:var(--t-lit-ink);box-shadow:var(--t-lit-edge)}
+html body .gpick-b,html body .pn-gb{border-radius:var(--t-r-s);color:var(--t-ink);font-family:var(--t-ui);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+html body .gpick-b.on,html body .pn-gb.on{color:var(--t-lit-ink);background:var(--t-lit);box-shadow:var(--t-lit-edge)}
+
+/* ---------- Panel "Mis tiendas" (Cheryl) ---------- */
+html body .pn-lede{color:var(--t-on-2);opacity:1}
+html body .pn-tile{border-radius:var(--t-r);box-shadow:var(--t-plate-edge)}
+html body .pn-tile::after{background:linear-gradient(180deg,rgba(0,0,0,0) 32%,rgba(8,9,11,.88) 100%),var(--t-plate-glare)}
+html body .pn-tile:active{transform:translateY(2px);box-shadow:var(--t-plate-press)}
+html body .pn-tc>span{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(14,15,18,.72);color:#fff;border-radius:var(--t-r-xs);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(255,255,255,.14)}
+html body .pn-name{font-family:var(--t-disp);color:var(--t-on)}
+html body .pn-zh{font-family:var(--t-ui);color:var(--t-on)}
+html body .pn-zv{border-radius:var(--t-r);background:var(--t-gkey);box-shadow:var(--t-gkey-edge)}
+html body .pn-empty{background:var(--t-gkey);color:var(--t-on);box-shadow:var(--t-gkey-edge)}
+html body .pn-card{border-radius:var(--t-r);background:var(--t-panel);color:var(--t-ink);box-shadow:var(--t-panel-edge),var(--t-sh2)}
+html body .pn-card.pn-vit{box-shadow:var(--t-panel-edge),0 0 0 2px var(--t-acc),var(--t-sh2)}
+html body .pn-card.over{box-shadow:0 0 0 3px var(--t-acc)}
+html body .pn-pos{background:var(--t-lit);color:var(--t-lit-ink);box-shadow:var(--t-lit-edge);font-family:var(--t-ui)}
+html body .pn-thumb{background:var(--t-stage);box-shadow:var(--t-pwell-sh)}
+html body .pn-m,html body .pn-gfix{color:var(--t-ink-2)}
+html body .pn-ar{border-radius:var(--t-r-s);color:var(--t-ink);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+html body .pn-ar:active:not(:disabled){transform:translateY(1px);box-shadow:var(--t-key-press-sh)}
+html body .pn-move{border-radius:var(--t-r-b);font-family:var(--t-ui)}
+html body .pn-move.in{color:var(--t-btn-ink);background:var(--t-btn);box-shadow:var(--t-btn-bevel),var(--t-sh1);text-shadow:var(--t-btn-ts)}
+html body .pn-move.out{color:var(--t-ink);background:var(--t-key);box-shadow:var(--t-key-edge),var(--t-sh1)}
+html body .pn-move:active{transform:translateY(2px)}
+html body .pn-card .pn-acts .btn{font-family:var(--t-ui)!important;border-radius:var(--t-r-s)!important;background:var(--t-key)!important;color:var(--t-ink)!important;box-shadow:var(--t-key-edge),var(--t-sh1)!important}
+html body .pn-card .pn-acts .btn.gold{background:var(--t-btn)!important;color:var(--t-btn-ink)!important;box-shadow:var(--t-btn-bevel),var(--t-sh1)!important}
+html body .pn-card .pn-acts .btn.dv-del{color:#a32035!important}
+html body .pn-card .pn-acts .btn:active{transform:translateY(2px)}
+html body .pn-sw{border-radius:var(--t-r);background:var(--t-key);color:var(--t-ink);box-shadow:var(--t-key-edge),var(--t-sh1)}
+
+/* ---------- Clientes (clientes.css usa --paper/--ink/--line: ya heredan; afinamos superficies) ---------- */
+html body .cli-step{background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh1)}
+html body .cli-kpi{background:var(--t-panel);box-shadow:var(--t-panel-edge),var(--t-sh1)}
+html body .cli-sort button{color:var(--t-on);background:var(--t-gkey);box-shadow:var(--t-gkey-edge);border-radius:var(--t-r-s)}
+html body .card .cli-sort button{color:var(--t-ink);background:var(--t-key);box-shadow:var(--t-key-edge)}
+html body .cli-sort button[aria-pressed="true"]{color:var(--t-lit-ink);background:var(--t-lit);box-shadow:var(--t-lit-edge)}
+html body .cli-sw{background:var(--t-pwell);box-shadow:var(--t-pwell-sh)}
+html body .cli-sw::after{background:var(--t-key);box-shadow:var(--t-key-edge),0 1px 3px rgba(0,0,0,.35)}
+html body .cli-switch input:checked + .cli-sw{background:var(--t-acc)}
+html body .cli-pre{box-shadow:var(--t-pwell-sh);background:var(--t-pwell)}
+html body .cli-switch{box-shadow:var(--t-pwell-sh)}
+
+@media (prefers-reduced-motion:reduce){
+  .btn,.icon-btn,.copy,.qbtn,.chip,.sheet-x,.view-back,.counter-back{transition:none!important}
+  .btn:active,.icon-btn:active,.copy:active,.qbtn:active,.sheet-x:active,.view-back:active,.counter-back:active,.storebar .sb:active{transform:none!important}
+}
+@media (forced-colors:active){.btn,.chip,.card,.sheet{border:1px solid CanvasText}}
+/* =================== fin del núcleo =================== */
+
+/* ---------- Salas interiores (catálogo / filtros) y caja ---------- */
+html body .interior,html body .interior.m2{--m2-ink:var(--t-ink);--m2-mute:var(--t-ink-2);--m2-hair:var(--t-hair);--m2-gold:var(--t-trim);background:var(--t-room);color:var(--t-ink)}
+.int-sign,.m2 .int-sign{color:var(--t-room-ink)}
+.int-sub{color:var(--t-ink-2)}
+.c3-nav{background:none;box-shadow:none}
+.m2-nav button:disabled,.c3-nav button:disabled{opacity:.4}
+.counter{background:var(--t-night)}
+.b3-caja .b3-desk{background:var(--t-bar);color:var(--t-on);border-bottom:0;box-shadow:var(--t-bar-edge),0 2px 0 -1px var(--t-hair-d)}
+.b3-sign{color:var(--t-on-2);border-bottom-color:var(--t-hair-d)}
+.b3-plate{color:var(--t-btn-ink);background:var(--t-btn);box-shadow:var(--t-btn-bevel),0 6px 14px -6px rgba(0,0,0,.6)}
+.b3-foot{border-top-color:var(--t-ink)}
+.demo-bar{letter-spacing:-.01em}
+.icon-btn.wa-ic{color:var(--t-icon-ink)}
+html body .counter-scene{background:radial-gradient(45% 35% at 50% 0%,rgba(255,255,255,.35),rgba(255,255,255,0) 70%),var(--t-room)}
+html body .item-emo,html body .c3-detail .item-emo{background:var(--t-stage)}
+.ledge{background:var(--t-trim)}
+.in,.m2-in,.counter-back.c3-back,.b3-total span,.b3-sign,.b3-plate small,.b3-vcols,.vf3-vbrand,.vf3-brand,.mw-meta,html body .pn-ar,html body .stp span{font-family:var(--t-ui)}
+
+
+/* =====================================================================
+   MIAMI: ajustes propios
+   ===================================================================== */
+.backdrop{background:rgba(12,4,30,.55)}
+body{font-family:var(--t-ui)}
+.storebar .sbn{color:#fff}
+/* títulos: Bodoni con un filo de luz morado→cian debajo */
+.view-title,.section-title,.fin-ptitle,html body .pn-name,.enc-title{font-family:var(--t-disp)}
+.view-title::after{background:var(--mi-line);box-shadow:var(--mi-line-glow);border-radius:2px}
+.sheet h2{font-family:var(--t-disp)}
+.sheet h2::after{background:var(--mi-line);border-radius:2px}
+/* precios en Bodoni */
+.c3-clp b,.c3-dprice b,.b3-price b,.b3-reg b,.vf3-price b,.vf3-vprice b,.cli-kpi b,.fin-big{font-family:var(--t-disp-n)}
+/* activo en las barras: tecla hundida con línea LED cian */
+.sb.on,.tab.on{color:#fff}
+.tab{color:var(--t-on-2)}
+.tab.on .ti:has(svg){color:var(--mi-cyan)}
+/* segmentado demo sobre barra violeta */
+.demo-bar{color:var(--t-on-2)}
+/* botones de acción principal: más brillo y relieve al pasar */
+.btn,.btn.coral,.btn.gold{font-weight:600}
+.btn:focus-visible{outline:2.5px solid var(--mi-cyan);outline-offset:3px}
+.sheet .btn:focus-visible,.card .btn:focus-visible,.caja-info .btn:focus-visible,.counter-info .btn:focus-visible,.interior .btn:focus-visible{outline-color:#5b25c9}
+/* secundario sobre fondo violeta: vidrio con canto, presión con hundimiento */
+.btn.ghost:active:not(:disabled){background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.05)),#33195f}
+/* WhatsApp y eliminar */
+.btn.dv-del,.btn.dv-del-yes{background:linear-gradient(180deg,rgba(255,255,255,.26) 0,rgba(255,255,255,.06) 45%,rgba(0,0,0,.16) 100%),#b8324a}
+.btn.dv-del:active,.btn.dv-del-yes:active{transform:translateY(2px);background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,0)),#9f2a40;box-shadow:inset 0 2px 4px rgba(0,0,0,.45),0 0 0 1px rgba(50,0,8,.6)}
+html body .pn-card .pn-acts .btn.dv-del{color:#9c2238!important}
+/* placas de estado */
+.pill{color:#3a1f6e;background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,0) 55%),#ebe3fd;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(91,37,201,.30)}
+.pill.coral{color:#2a0a1c;background:var(--t-tag);box-shadow:var(--t-tag-edge)}
+/* aviso */
+.toast{color:#f6f2ff}
+/* diálogo de la caja */
+.b3-plate b{font-family:var(--t-disp)}
+/* menú de hoja: íconos violeta */
+.sheet:has([data-m]) .stack>.btn .ico{color:#5b25c9}
+.thumb .ico{color:#5b25c9}
+.lm-toggle span .ico{color:#5b25c9}
+.lm-banner .bolt{color:var(--mi-cyan)}
+/* 2×1 sobre vidrio violeta */
+.c3-badge.c3-2x1,.m2-badge.m2-2x1{color:#f6f2ff}
+
+/* ---------- Encabezado de la ficha (detalle) ---------- */
+.c3-dsign{color:#f6f2ff;font-family:var(--t-disp)}
+.c3-dbar .counter-back,.c3-dbar .c3-back{color:var(--t-gkey-ink)}
+
+/* =====================================================================
+   LAYOUT heredado de material.css (vitrina, rieles, botonera, placas)
+   Solo cambian colores y materiales; posiciones y tamaños idénticos.
+   ===================================================================== */
+/* Vitrina: sin halo negro — costados y bordes claros, foto más luminosa */
+.vf3-scene{background:#e9e4f3}
+.vf3-blur{filter:blur(22px) brightness(1.02) saturate(1.05)}
+.vf3-narrow .vf3-img{-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.vf3-img{filter:brightness(1.16) contrast(1.03) saturate(1.04)}
+.vf3-scene::after{background:linear-gradient(180deg,rgba(20,8,41,.10),transparent 10%,transparent 90%,rgba(20,8,41,.16))}
+
+/* Vitrina limpia: foto a pantalla completa, sin bandas negras, sin desenfoque, sin viñeta */
+.vf3-clean{background:#ece8f4}
+.vf3-clean .vf3-blur{display:none}
+.vf3-clean .vf3-img{filter:none;-webkit-mask-image:none;mask-image:none}
+.vf3-clean::after{display:none}
+.vf3-screen:has(.vf3-clean){background:#f1eef7}
+.vf3-screen:has(.vf3-clean) .vf3-door{background:linear-gradient(180deg,#f8f6fc,#ece8f4);border-top:1px solid rgba(20,8,41,.08);box-shadow:none}
+.vf3-screen:has(.vf3-clean) .vf3-pname{color:#1a1030}
+.vf3-screen:has(.vf3-clean) .vf3-pnote{color:#4a3d66}
+
+/* Sin franja: la foto ocupa todo y "Entrar a la tienda" queda sobre el piso, frente a la puerta */
+.vf3-screen{position:relative}
+.vf3-door,.vf3-screen:has(.vf3-clean) .vf3-door{position:absolute;left:0;right:0;bottom:0;z-index:5;background:none!important;border:0!important;box-shadow:none!important;
+  padding:0 16px max(16px,var(--safe-b,0px));display:flex;justify-content:center;pointer-events:none}
+.vf3-door::before{content:"";position:absolute;inset:-40px 0 0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(29,14,58,.20))}
+.vf3-plate{display:none!important}
+.vf3-door .vf3-enter,.vf3-door .btn{pointer-events:auto;flex:0 1 auto!important;width:min(100%,420px)!important;min-width:0!important;margin:0 auto!important;
+  box-shadow:var(--t-btn-bevel),0 10px 22px -6px rgba(10,4,30,.6),0 2px 4px rgba(10,4,30,.35)!important}
+.vf3-door .vf3-enter:active,.vf3-door .btn:active{box-shadow:var(--t-btn-press-sh)!important}
+
+/* Vitrina despejada: barra demo y encabezado pasan a rieles laterales flotantes (vidrio violeta) */
+body.vit-mode .demo-bar{position:fixed;z-index:45;left:10px;top:max(10px,env(safe-area-inset-top));padding:4px;border:0;border-radius:14px;
+  font-size:0;line-height:0;gap:0;background:rgba(29,14,58,.72);box-shadow:0 4px 14px rgba(10,4,30,.4),inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.22)}
+body.vit-mode .demo-bar .seg{margin:0;display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:1.2}
+body.vit-mode .demo-bar .seg button{min-height:40px;min-width:76px;padding:4px 8px;font-size:12px}
+body.vit-mode header.top.client{position:fixed;z-index:45;right:10px;top:max(10px,env(safe-area-inset-top));left:auto;bottom:auto;width:auto;height:auto;
+  display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 6px;border-radius:30px;border:0;
+  background:rgba(29,14,58,.72);box-shadow:0 4px 14px rgba(10,4,30,.4),inset 0 0 0 1px rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.22)}
+body.vit-mode header.top.client::before,body.vit-mode header.top.client::after{display:none}
+body.vit-mode header.top.client .brand{order:9;writing-mode:vertical-rl;transform:rotate(180deg);font-size:14px;padding:8px 0;margin:0;max-height:none;white-space:nowrap;letter-spacing:.06em}
+body.vit-mode header.top.client .icon-btn{margin:0}
+body.vit-mode main.page{padding-top:0;margin-top:0}
+body.vit-mode header.top.client .brand{max-width:none!important;max-height:none!important;overflow:visible!important;text-overflow:clip!important;width:auto;height:auto;font-size:13px}
+@media (max-width:639px){body.vit-mode .demo-bar .seg button{min-width:64px;font-size:11.5px}}
+/* demo: interruptor compacto arriba a la izquierda (horizontal); riel derecho solo con íconos + marca vertical */
+body.vit-mode .demo-bar .seg{flex-direction:row}
+body.vit-mode .demo-bar .seg button{min-height:36px;min-width:0;padding:4px 12px}
+body.vit-mode header.top.client .brand{transform:none;writing-mode:vertical-rl;padding:6px 0 4px;line-height:1;font-size:13px}
+/* botonera de tiendas oculta en la vitrina; se abre con el botón "Tiendas" del riel */
+.vit-shops{display:none}
+body.vit-mode .vit-shops{display:grid}
+body.vit-mode .storebar{transform:translateY(110%);transition:transform .25s ease}
+body.vit-mode.vit-shops-open .storebar{transform:none}
+body.vit-mode.vit-shops-open .vit-shops{box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #22e3f0,0 0 12px rgba(34,227,240,.6)}
+@media (prefers-reduced-motion:reduce){body.vit-mode .storebar{transition:none}}
+
+/* afiches de vitrina: papel con cinta adhesiva (se conservan) */
+.vf3-paper{background:linear-gradient(180deg,#ffffff,#f4f3f1)}
+.vf3-brand{color:#55575c}
+.vf3-price b{color:#121316}
+
+/* =====================================================================
+   Módulos: quitar dorados / tonos fijos
+   ===================================================================== */
+/* Finanzas: paleta del gráfico morado + cian profundo (ambos >3:1 sobre el panel claro) */
+.fin{--fin-s:#6b34e0;--fin-c:#00808f;--fin-c-text:#00707d;--fin-up:#1d5a3f;--fin-down:#8a2430}
+.fin-seg button{color:var(--t-gkey-ink)}
+.fin-ptitle{color:var(--t-on)}
+.fin-today{color:var(--t-led-ink);font-family:var(--t-ui)}
+.fin-tip{color:#f6f2ff}
+.fin-tip-h{color:#cbbdf0}
+.fin-table summary{color:#5b25c9}
+.fin-actions .btn.ghost{color:var(--t-gkey-ink)}
+.card .fin-actions .btn.ghost,.fin .card .btn.ghost{color:var(--t-ink)}
+/* Caminata */
+html body .mw-poster:focus-visible,html body .mw-btn:focus-visible{outline:3px solid #22e3f0}
+html body .mw-bar i{background:var(--mi-line);box-shadow:var(--mi-line-glow)}
+/* Encargos: textos sobre el fondo violeta */
+.enc-lede,.enc-sub>.enc-p{color:var(--t-on-2)}
+.enc-hist>summary,.enc-title{color:var(--t-on)}
+/* Campañas */
+.cp-prev{background:#1a1030}
+.cp-b:focus-visible,.cp-gal:focus-visible{outline-color:#22e3f0}
+html body .pn-card.over{box-shadow:0 0 0 3px #00a3b5}
+/* Clientes: interruptor encendido en cian profundo */
+html body .cli-switch input:checked + .cli-sw{background:#00808f}
+/* Caja: visor del total con luz cian (antes dorada) */
+.b3-reg{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 40%),#140829;box-shadow:inset 0 0 0 1px rgba(34,227,240,.22),inset 0 2px 6px rgba(0,0,0,.6),0 0 0 1px rgba(8,2,22,.8),var(--t-sh1)}
+.b3-reg span{color:#cbbdf0;font-size:14px;letter-spacing:.18em}
+.b3-reg b{color:#7cf3fa;text-shadow:0 0 8px rgba(34,227,240,.45)}
+/* texto mínimo 14 px también en los rieles de la vitrina y en la placa de la caja */
+body.vit-mode .demo-bar .seg button,body.vit-mode .demo-bar .seg{font-size:14px!important}
+body.vit-mode .demo-bar .seg button{padding:4px 10px;letter-spacing:.04em}
+body.vit-mode header.top.client .brand{font-size:14px!important}
+.b3-plate small{font-size:14px;letter-spacing:.16em}
+/* estado "pendiente": vidrio cian pálido (sin ámbar) */
+.pill.amber{color:#00535c;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 55%),#d4f6f9;box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(0,112,125,.35)}
+:root{--amber:#00707d;--amber-l:#dcf6f9}
+.ai{font-size:14px;background:#dcf6f9;color:#00535c}

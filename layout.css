@@ -1,0 +1,99 @@
+/* selector demo al costado de la barra de tiendas */
+.demo-bar.demo-moved{display:none}
+body.vit-mode .demo-bar.demo-moved{display:flex}
+.storebar.sb-has-demo{display:flex;align-items:center}
+.storebar.sb-has-demo > .seg{flex:none;display:flex;flex-direction:column;gap:3px;margin:0 0 0 8px;padding:3px;border-radius:12px}
+.storebar.sb-has-demo > .seg button{min-height:36px;min-width:0;padding:2px 10px;font-size:14px}
+.storebar.sb-has-demo .storebar-in{flex:1;min-width:0}
+/* catálogo: sin barra "Vitrina / Más filtros", sin "Precios entre…" ni flechas chicas: más alto para la foto */
+.c3 .int-bar{display:none!important}
+.c3 .c3-status{display:none!important}
+.c3-dbar{display:flex;align-items:center;gap:10px}
+.c3-dbar .c3-dfilt{margin-left:auto;min-height:40px;padding:6px 14px;font-size:14px}
+/* foto del producto lo más grande posible dentro de la tarjeta */
+.c3 .c3-stage img{width:min(100cqw - 10px,100cqh - 10px);height:min(100cqw - 10px,100cqh - 10px)}
+.c3 .c3-stage{margin:4px 4px 0}
+@media (max-width:599px){
+  .c3 .c3-info{padding:6px 10px 6px}
+  .c3 .c3-info .c3-calc summary{padding-top:4px;padding-bottom:4px}
+  .c3 .m2-ctrl{margin-bottom:4px}
+}
+/* orden: tres botones iguales en una sola línea */
+.c3 .m2-sort{display:grid!important;grid-template-columns:repeat(3,1fr);gap:4px}
+.c3 .m2-sort .m2-so{white-space:nowrap;text-align:center;justify-content:center;padding-left:6px;padding-right:6px;min-height:40px}
+/* descuento con la convención de las tiendas: etiqueta rectangular roja impresa, números amarillos, en la esquina superior izquierda de la foto */
+.c3-badge,.c3-detail .counter-scene .c3-badge{bottom:12px!important;right:12px!important;left:auto!important;top:auto!important;width:auto!important;height:auto!important;
+  border-radius:3px!important;padding:7px 11px 6px!important;display:inline-flex!important;align-items:center;
+  font:800 26px/1 Jost,"Inter",system-ui,sans-serif!important;letter-spacing:-.01em;
+  color:#ffe600!important;-webkit-text-fill-color:#ffe600!important;background:#e30613!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.25)!important;box-shadow:0 2px 0 #9d0410,0 4px 10px rgba(0,0,0,.25)!important;transform:none!important;zoom:1}
+.c3-badge.c3-2x1{right:auto!important;left:12px!important}
+.vf3-badge{top:calc(var(--p,10px) + var(--Sh,var(--S,100px)) - 4px)!important;left:calc(var(--p,10px) + var(--S,100px) - 4px)!important;right:auto!important;bottom:auto!important;translate:-100% -100%;}
+.vf3-badge,.vf3-vbadge{
+  border-radius:3px!important;padding:.32em .5em .26em!important;font-weight:800!important;font-family:Jost,"Inter",system-ui,sans-serif!important;
+  color:#ffe600!important;-webkit-text-fill-color:#ffe600!important;background:#e30613!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.25)!important;box-shadow:0 2px 0 #9d0410,0 3px 8px rgba(0,0,0,.25)!important;zoom:1}
+.vf3-badge{font-size:max(15px,calc(var(--fp,18px) * .82))!important}
+.vf3-vbadge{top:auto!important;left:auto!important;bottom:14px!important;right:14px!important;font-size:24px!important;zoom:1}
+.vf3-badge.vf3-2x1{left:calc(var(--p,10px) + 4px)!important;translate:0 -100%}
+.vf3-vbadge.vf3-2x1{right:auto!important;left:14px!important}
+/* "Entrar a la tienda" durante la caminata 3D: mismo botón morado→cian del resto de la app */
+.mw3-enter{background:var(--t-btn)!important;color:var(--t-btn-ink,#fff)!important;border:0!important;border-radius:var(--t-r-b,14px)!important;
+  text-shadow:var(--t-btn-ts)!important;box-shadow:var(--t-btn-bevel),0 6px 18px rgba(10,4,30,.45)!important;letter-spacing:.1em;text-transform:uppercase;font-size:15px!important}
+.mw3-enter:active{transform:translateX(-50%) translateY(2px)!important;background:var(--t-btn-press)!important;box-shadow:var(--t-btn-press-sh)!important}
+.mw3-loading{background:#1d0e3a!important;color:#f6f2ff!important}
+.mw3-loading small{color:#22e3f0!important}
+/* compra editable dentro de la caja */
+.cj-edit{display:grid;gap:8px;margin:0 0 14px}
+.cj-it{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--t-panel,#f6f2ff);color:var(--t-ink,#1a1030);box-shadow:var(--t-panel-edge,inset 0 0 0 1px rgba(0,0,0,.08))}
+.cj-t{font-size:14px;line-height:1.3}
+.cj-q button{min-width:36px;min-height:36px}
+.cj-rm{min-height:36px;padding:4px 10px;border:0;background:transparent;color:#b8324a;font:600 14px Jost,system-ui,sans-serif;cursor:pointer;text-decoration:underline}
+/* Botonera de tiendas: ícono de línea con el look de la app + la palabra (sin fotos) */
+.storebar .sb{background:linear-gradient(160deg,#3a1f6e 0%,#2a1450 55%,#1d0e3a 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 1px rgba(155,92,255,.45),0 4px 10px rgba(8,2,24,.5)!important}
+.storebar .sb .si{background:none!important}
+.storebar .sb .si img,.storebar .sb .si .mono,.storebar .sb .si::after{display:none!important}
+.storebar .sb .si::before{content:"";position:absolute;left:50%;top:14%;width:46%;aspect-ratio:1;transform:translateX(-50%);
+  background:linear-gradient(160deg,#c9a8ff 0%,#22e3f0 100%);-webkit-mask:var(--ic) center/contain no-repeat;mask:var(--ic) center/contain no-repeat;
+  filter:drop-shadow(0 0 6px rgba(34,227,240,.55))}
+.storebar .sb .sbn{padding-bottom:9px;color:#fff;text-shadow:0 1px 2px rgba(8,2,24,.8)}
+.storebar .sb.on{background:linear-gradient(160deg,#6b34e0 0%,#4a52d8 50%,#007f8e 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 2px #22e3f0,0 0 16px rgba(34,227,240,.55)!important}
+.storebar .sb.on .si::before{background:#fff;filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
+.storebar .sb[data-go="Carteras"]{--ic:url(img/ic/carteras.svg?v=1793768494)}
+.storebar .sb[data-go="Zapatos"]{--ic:url(img/ic/zapatos.svg?v=1793768494)}
+.storebar .sb[data-go="Deportes"]{--ic:url(img/ic/deportes.svg?v=1793768693)}
+.storebar .sb[data-go="Lenceria"]{--ic:url(img/ic/lenceria.svg?v=1793768494)}
+.storebar .sb[data-go="Relojes"]{--ic:url(img/ic/relojes.svg?v=1793768494)}
+.storebar .sb[data-go="Otros"]{--ic:url(img/ic/outlet.svg?v=1793768494)}
+.storebar .sb[data-go="Invierno"]{--ic:url(img/ic/invierno.svg?v=1793768494)}
+.storebar .sb[data-go="Ropa"]{--ic:url(img/ic/ropa_mujer.svg?v=1793773164)}
+.storebar .sb[data-go="RopaHombre"]{--ic:url(img/ic/ropa_hombre.svg?v=1793773164)}
+.storebar .sb[data-go="__ultimo"]{--ic:url(img/ic/liquidacion.svg?v=1793768494)}
+.storebar .sb[data-go="__ultimo"] .si::before{background:linear-gradient(160deg,#ffe600,#ff7aa2)}
+.storebar .sb .si::before{top:9%;width:60%}
+.storebar .sb .sbn{font-size:16px!important;font-weight:700!important;line-height:1.1;padding-bottom:7px}
+@media (max-width:639px){.storebar .sb .sbn{font-size:15px!important}}
+.storebar .sb .si::before{top:7%;width:50%}
+@media (max-width:639px){.storebar .sb .si::before{top:6%;width:40%}.storebar .sb .sbn{line-height:1.05}}
+/* ícono y nombre al máximo dentro de la placa, con margen parejo */
+.storebar .sb{display:flex!important;flex-direction:column!important;justify-content:stretch!important;padding:9px 8px 8px!important}
+.storebar .sb .si{position:relative!important;inset:auto!important;flex:1 1 auto!important;min-height:0;width:auto!important;height:auto!important;z-index:0!important;margin:0 4px 4px}
+.storebar .sb .si::before{inset:0!important;left:0!important;top:0!important;width:auto!important;aspect-ratio:auto!important;transform:none!important;-webkit-mask-size:contain!important;mask-size:contain!important}
+.storebar .sb .sbn{flex:none;padding:0!important;font-size:18px!important;line-height:1.05!important;letter-spacing:0}
+@media (max-width:639px){.storebar .sb{padding:7px 6px 6px!important}.storebar .sb .si{margin:0 2px 3px}.storebar .sb .sbn{font-size:16px!important}}
+.storebar .sb .sbn{font-size:17px!important}@media (max-width:639px){.storebar .sb .sbn{font-size:16px!important}}
+/* 10 tiendas: en PC las 10 placas caben sin desplazar (desde ~1280 px); en celular se desliza como antes */
+@media (min-width:900px){.storebar .sb{width:clamp(92px,calc((100vw - 200px) / 10),124px);height:clamp(92px,calc((100vw - 200px) / 10),124px)}
+  .storebar .sb .sbn{font-size:clamp(14px,calc((100vw - 200px) / 70),17px)!important}}
+/* Descuento sobre descuento: segundo sticker "−20% extra" apilado justo encima del primero, mismo rojo/amarillo */
+.c3-badge.dx2,.c3-detail .counter-scene .c3-badge.dx2{bottom:56px!important;font-size:19px!important;padding:6px 9px 5px!important;rotate:-3deg}
+.vf3-vbadge.dx2{bottom:57px!important;font-size:18px!important;rotate:-3deg}
+.vf3-badge.dx2{translate:-100% calc(-200% - 4px);font-size:max(12px,calc(var(--fp,18px) * .6))!important;rotate:-3deg}
+.sticker.dx2{font-size:10px!important;line-height:1.05;text-align:center;padding:2px}
+.cubby .sticker.dx2{top:58px}.vit-window .sticker.dx2{top:74px}
+.vf-badge.dx2{top:47cqw;width:24cqw;height:24cqw;font-size:6cqw;line-height:1;text-align:center;transform:rotate(-8deg)}
+/* 2×1 en la foto grande del producto: a la izquierda, sin tapar el descuento */
+.c3-detail .counter-scene .c3-badge.c3-2x1,.c3-badge.c3-2x1{right:auto!important;left:12px!important}
+/* "2x1" del recuadro de promoción: letra gruesa y legible (la x fina de Bodoni parecía un signo menos) */
+.c3-promo b{font-family:Jost,"Inter",system-ui,sans-serif!important;font-weight:800!important;letter-spacing:0!important}

@@ -1,0 +1,7 @@
+Fuentes de los PDF de Shoppera Miami (ordenes.js): subconjuntos Latin-1 (cp1252) en TTF, generados con fontTools.
+  pdf-bodoni.ttf   <- bodoni-moda.woff (instancia wght 600, opsz 96)   Licencia: SIL OFL 1.1, ver OFL-BodoniModa.txt
+  pdf-jost.ttf     <- jost.woff (instancia wght 600)                    Licencia: SIL OFL 1.1, ver OFL-Jost.txt
+  pdf-inter.ttf    <- inter-regular.woff                                 Licencia: SIL OFL 1.1, ver OFL-Inter.txt
+  pdf-inter-sb.ttf <- inter-semibold.woff                                Licencia: SIL OFL 1.1, ver OFL-Inter.txt
+Son versiones modificadas (subconjunto) bajo la misma licencia OFL; no se venden por separado.
+pdf-fonts.json: anchos (1/1000 em) por código WinAnsi 32..255 y métricas para el PDF.

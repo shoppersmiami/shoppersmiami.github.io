@@ -1,0 +1,46 @@
+/* Caminata real por el mall (walk.js) */
+.mw{position:fixed;inset:0;z-index:60;background:#0c0b0e;opacity:0;transition:opacity .22s ease;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+.mw.go{opacity:1}
+.mw.out{opacity:0;transition:opacity .38s ease}
+.mw-stage{position:absolute;inset:0;overflow:hidden;contain:strict}
+.mw-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;background:transparent}
+.mw-vid.on{opacity:1}
+.mw-img{position:absolute;left:0;top:0;width:100%;height:100%;max-width:none;object-fit:cover;opacity:0;transform-origin:50% 54%;
+  transition-property:opacity,transform,filter;transition-timing-function:cubic-bezier(.4,.05,.3,1)}
+.mw-img.on{opacity:1}
+.mw-img.mw-enter{opacity:0;transform:scale(.955);filter:blur(1.5px)}
+.mw-img.on:not(.mw-enter){transform:none;filter:none}
+.mw-leave{opacity:0 !important;transform:scale(1.08);filter:blur(2px);transform-origin:50% 54%;
+  transition-property:opacity,transform,filter;transition-timing-function:cubic-bezier(.4,.05,.3,1)}
+.mw-vid.mw-leave{transition-property:opacity,transform,filter}
+.mw-posters{position:absolute;inset:0;pointer-events:none;transition:opacity .25s}
+.mw-bridging .mw-posters{opacity:0}
+.mw-poster{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:auto;cursor:pointer;opacity:.93;backface-visibility:hidden;outline:none}
+.mw-poster:focus-visible{outline:3px solid #f1d38a;outline-offset:2px}
+.mw-fly{position:absolute;max-width:none;z-index:2;transition:left .5s cubic-bezier(.3,.1,.2,1),top .5s cubic-bezier(.3,.1,.2,1),width .5s cubic-bezier(.3,.1,.2,1),height .5s cubic-bezier(.3,.1,.2,1)}
+.mw-landing .mw-ui{opacity:0;transition:opacity .25s}
+.mw-landing{background:transparent;transition:background .3s}
+.mw-landing .mw-stage>:not(.mw-fly){opacity:0;transition:opacity .45s}
+/* interfaz */
+.mw-ui{position:absolute;inset:0;pointer-events:none}
+.mw-btn{pointer-events:auto;position:absolute;top:calc(12px + env(safe-area-inset-top,0px));min-height:44px;padding:0 16px;border-radius:22px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(14,12,16,.42);color:#fff;font:600 15px/44px "Jost",system-ui,sans-serif;letter-spacing:.02em;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);cursor:pointer}
+.mw-btn:hover{background:rgba(14,12,16,.6)}
+.mw-btn:focus-visible{outline:3px solid #f1d38a;outline-offset:2px}
+.mw-back{left:calc(12px + env(safe-area-inset-left,0px))}
+.mw-skip{right:calc(12px + env(safe-area-inset-right,0px))}
+.mw-foot{position:absolute;left:0;right:0;bottom:0;padding:28px 20px calc(18px + env(safe-area-inset-bottom,0px));text-align:center;color:#fff;
+  background:linear-gradient(transparent,rgba(8,7,10,.55))}
+.mw-label{font-family:"Bodoni Moda",Georgia,serif;font-size:24px;font-weight:600;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+.mw-meta{margin-top:4px;font:500 13px "Jost",system-ui,sans-serif;opacity:.82;letter-spacing:.04em}
+.mw-bar{margin:12px auto 0;max-width:420px;height:3px;border-radius:2px;background:rgba(255,255,255,.22);overflow:hidden}
+.mw-bar i{display:block;height:100%;width:0;background:#e9cf8f;border-radius:2px}
+.mw-d .mw-label{font-size:28px}
+body.mw-on{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.mw,.mw-img,.mw-leave,.mw-fly{transition:none !important}}
+/* caminata limpia: sin franja inferior ni textos; solo una línea finísima de avance y Volver/Saltar arriba */
+.mw-foot{background:none;padding:0 0 calc(6px + env(safe-area-inset-bottom,0px))}
+.mw-label,.mw-meta{display:none}
+.mw-bar{margin:0 auto;max-width:none;height:2px;background:rgba(255,255,255,.18);border-radius:0}
+.mw-bar i{background:rgba(255,255,255,.85)}
+.mw-btn{background:rgba(14,12,16,.28);border-color:rgba(255,255,255,.22)}

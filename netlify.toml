@@ -1,0 +1,5 @@
+# Sitio estático: no hay paso de build, se publica la carpeta tal cual.
+# Los encabezados (caché y seguridad) están en el archivo _headers.
+[build]
+  publish = "."
+  command = ""

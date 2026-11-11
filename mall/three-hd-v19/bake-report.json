@@ -1,0 +1,23 @@
+{
+  "variants": [
+    {
+      "name": "mall-lite",
+      "geometryBytes": 5625708,
+      "textureBytes": 1856017,
+      "totalBytes": 7481725,
+      "meshes": 58
+    },
+    {
+      "name": "mall",
+      "geometryBytes": 8923348,
+      "textureBytes": 18124243,
+      "totalBytes": 27047591,
+      "meshes": 58
+    }
+  ],
+  "visualQA": "PENDING",
+  "measuredFPS": null,
+  "sourceBlendUnchanged": true,
+  "agxEncoded": true,
+  "liveShadows": false
+}

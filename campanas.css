@@ -1,0 +1,109 @@
+/* Shoppers Miami — "Afiches de la vitrina": 4 pantallas por tienda (campanas.js), dentro de Mis tiendas → tienda.
+   Una sala de monitores: marco morado noche (#1d0e3a), brillo cian (#22e3f0) al tocar, afiche como en el mall 3D.
+   Botones de 52 px o más, texto de 14 px o más. */
+.ps-zone{--ps-ink:#1d0e3a;--ps-vio:#7b3fe4;--ps-cy:#22e3f0;padding:12px;border-radius:14px;
+  background:linear-gradient(160deg,rgba(123,63,228,.20),rgba(29,14,58,.30));box-shadow:inset 0 0 0 1.5px rgba(34,227,240,.30)}
+.ps-wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:640px;margin:0 auto}
+@media (min-width:700px){.ps-wall{max-width:500px;gap:16px}}
+.ps-scr{display:flex;flex-direction:column;gap:6px;min-width:0;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ps-tv{position:relative;display:block;padding:7px;border-radius:12px;background:linear-gradient(180deg,#2a1552,#1d0e3a);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 6px 16px -6px rgba(0,0,0,.55);transition:box-shadow .15s,transform .15s}
+.ps-glass{position:relative;display:block;aspect-ratio:472/668;border-radius:6px;overflow:hidden;background:#0f0722}
+.ps-num{position:absolute;z-index:3;top:-6px;left:-6px;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;
+  font:700 17px/1 Jost,system-ui,sans-serif;color:#1d0e3a;background:var(--ps-cy);box-shadow:0 0 0 3px #1d0e3a,0 0 12px rgba(34,227,240,.6)}
+@media (hover:hover){.ps-scr:hover .ps-tv{transform:translateY(-2px);box-shadow:inset 0 0 0 2px var(--ps-cy),0 0 18px rgba(34,227,240,.35),0 8px 18px -6px rgba(0,0,0,.6)}}
+.ps-scr:active .ps-tv{transform:scale(.985)}
+.ps-scr:focus-visible{outline:none}
+.ps-scr:focus-visible .ps-tv{box-shadow:inset 0 0 0 3px var(--ps-cy),0 0 0 3px #fff,0 0 20px rgba(34,227,240,.5)}
+/* leyenda bajo cada pantalla */
+.ps-cap{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 6px;min-height:40px;padding:0 2px;font:500 14px/1.25 Jost,system-ui,sans-serif}
+.ps-cap span:not(.ps-k){min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.92}
+.ps-cap em{font-style:normal;font-weight:700;color:#ff5a6e}
+.ps-k{font-weight:700;color:var(--ps-cy)}
+/* automático: tono distinto (borde punteado violeta, afiche apagado) */
+.ps-k-auto .ps-tv{background:repeating-linear-gradient(135deg,#24124a 0 8px,#1d0e3a 8px 16px);box-shadow:inset 0 0 0 1.5px rgba(123,63,228,.8)}
+.ps-k-auto .ps-glass{outline:2px dashed rgba(34,227,240,.55);outline-offset:-2px}
+.ps-k-auto .ps-post{opacity:.62;filter:saturate(.7)}
+.ps-k-auto .ps-k{color:#c9b4ff}
+.ps-k-auto .ps-num{background:#c9b4ff}
+.ps-k-empty .ps-k{color:#c9b4ff}
+.ps-autodot{display:inline-block;padding:0 8px;border-radius:999px;font-size:14px;color:#c9b4ff;box-shadow:inset 0 0 0 1.5px rgba(123,63,228,.9)}
+.ps-note{max-width:640px;margin:12px auto 0;font-size:14px;line-height:1.4;opacity:.9}
+/* vacía */
+.ps-void{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;text-align:center;
+  color:#e9e2ff;font:500 15px/1.2 Jost,system-ui,sans-serif;background:radial-gradient(circle at 50% 40%,rgba(34,227,240,.12),transparent 65%),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px)}
+.ps-void b{font:600 22px/1 "Bodoni Moda",Didot,Georgia,serif;color:#fff}
+/* afiche (mismo diseño que el del mall 3D: canvas 472×668) */
+.ps-post{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff;color:#1a1030;container-type:inline-size}
+.ps-pimg{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;background:#ece7f8}
+.ps-pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ps-pno{position:absolute;inset:0;display:grid;place-items:center;font:600 40px "Bodoni Moda",serif;color:#7b3fe4}
+.ps-poffer .ps-pimg{flex:0 0 77.8%}
+.ps-pinfo{display:flex;flex-direction:column;justify-content:center;gap:1px;padding:2% 4.2%;min-height:0}
+.ps-pname{font:600 5.1cqw/1.15 Jost,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-pprice{font:700 11.8cqw/1 "Bodoni Moda",Georgia,serif}
+.ps-pcl{font:400 5.5cqw/1.1 Jost,system-ui,sans-serif;color:#5b4f7a}
+.ps-badge{position:absolute;right:0;top:61.5%;padding:2.5% 6%;font:800 13cqw/1 Jost,system-ui,sans-serif;color:#ffe600;background:#e30613;box-shadow:0 1.3cqw 0 #9d0410}
+.ps-badge.ps-b2{top:45.5%;font-size:8cqw;padding:2.5% 5%}
+.ps-pphoto .ps-ptitle{flex:0 0 10.2%;display:grid;place-items:center;min-width:0;padding:0 4%;font:700 6.6cqw/1 Jost,system-ui,sans-serif;text-align:center}
+.ps-ptitle span{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-pphoto.ps-notitle .ps-pimg{flex:1 1 100%}
+
+/* ---------- Editor de una pantalla (hoja inferior) ---------- */
+.sheet.ps-sheet{max-width:860px}
+.ps-ed{--ps-ink:#1d0e3a;--ps-vio:#7b3fe4;--ps-cy:#22e3f0}
+.ps-ed h2{margin:0 0 4px;font-family:"Bodoni Moda",Didot,Georgia,serif}
+.ps-of{font:400 16px Jost,system-ui,sans-serif;opacity:.7}
+.ps-lede{margin:0 0 12px;font-size:15px;opacity:.85}
+.ps-edgrid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;align-items:start}
+@media (min-width:700px){.ps-edgrid{grid-template-columns:260px minmax(0,1fr);gap:20px}}
+.ps-edprev{display:flex;flex-direction:column;gap:8px;position:sticky;top:0}
+.ps-tvbig{padding:9px}
+.ps-tvbig .ps-num{width:36px;height:36px;font-size:19px}
+.ps-state{font-size:14px;line-height:1.3;opacity:.9}
+.ps-state.auto{color:var(--ps-vio)}
+.ps-draft{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:600;color:#1d0e3a;background:var(--ps-cy)}
+.ps-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-bottom:10px;border-radius:12px;background:#1d0e3a}
+.ps-tab{min-height:52px;padding:6px 8px;border:0;border-radius:9px;background:none;color:#e9e2ff;font:600 15px/1.15 Jost,system-ui,sans-serif;cursor:pointer}
+.ps-tab.on{color:#1d0e3a;background:var(--ps-cy);box-shadow:0 0 14px rgba(34,227,240,.45)}
+.ps-pane[hidden]{display:none}
+.ps-upb{display:grid;grid-template-columns:1fr;gap:8px}
+.ps-b{display:flex;align-items:center;justify-content:center;min-height:52px;margin:0;padding:8px 12px;border:0;border-radius:10px;cursor:pointer;text-align:center;
+  font:600 16px/1.15 Jost,system-ui,sans-serif;color:#1d0e3a;background:#fff;box-shadow:inset 0 0 0 1.5px rgba(29,14,58,.28),0 1px 4px rgba(0,0,0,.15)}
+.ps-b.ps-main{color:#fff;background:linear-gradient(180deg,#8a52f0,#7b3fe4);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25),0 2px 8px rgba(123,63,228,.45)}
+.ps-b:disabled{opacity:.45;cursor:default}
+.ps-b:focus-visible,.ps-tab:focus-visible,.ps-o:focus-visible{outline:3px solid var(--ps-cy);outline-offset:2px}
+.ps-l{display:block;margin:12px 0 6px;font-size:15px;font-weight:600}
+.ps-l span{font-weight:400;opacity:.8}
+.ps-ed .ps-in{font-size:16px;min-height:52px;width:100%;box-sizing:border-box}
+.ps-list{display:flex;flex-direction:column;gap:6px;max-height:min(46vh,420px);overflow:auto;margin-top:8px;padding:2px}
+.ps-o{position:relative;display:flex;align-items:center;gap:10px;min-height:64px;padding:6px 8px;border:0;border-radius:10px;background:#fff;color:#1d0e3a;text-align:left;font:inherit;cursor:pointer;
+  box-shadow:inset 0 0 0 1.5px rgba(29,14,58,.18)}
+.ps-o.on{box-shadow:inset 0 0 0 3px var(--ps-cy),0 0 12px rgba(34,227,240,.45)}
+.ps-oimg{flex:none;width:52px;height:52px;border-radius:6px;overflow:hidden;background:#ece7f8}
+.ps-oimg img{width:100%;height:100%;object-fit:cover;display:block}
+.ps-ot{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ps-ot b{font:600 15px/1.2 Jost,system-ui,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ps-ot small{font-size:14px;color:#5b4f7a}
+.ps-obadge{flex:none;font:800 15px Jost,system-ui,sans-serif;font-style:normal;color:#e30613}
+.ps-on{flex:none;padding:2px 8px;border-radius:999px;font-size:14px;color:#fff;background:#7b3fe4}
+.ps-none{padding:14px;font-size:15px;text-align:center;opacity:.85}
+.ps-move{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ps-move[hidden]{display:none}
+.ps-mvl{grid-column:1/-1;margin:4px 0 0}
+.ps-mv{font-size:15px}
+.ps-foot{display:grid;grid-template-columns:1fr;gap:8px;margin-top:16px}
+@media (min-width:700px){.ps-foot{grid-template-columns:2fr 1fr 1fr}}
+.ps-b.ps-ok{color:#1d0e3a;background:var(--ps-cy);box-shadow:0 0 16px rgba(34,227,240,.5);font-size:17px}
+.ps-b.ps-ok:disabled{box-shadow:none;background:#cfeff2}
+.ps-b.ps-del{color:#cf3355}
+@media (max-width:420px){.ps-edgrid{grid-template-columns:minmax(0,1fr)}.ps-edprev{position:static;flex-direction:row;align-items:center}.ps-edprev .ps-tv{flex:0 0 46%}}
+
+/* ---------- Foto subida pegada en la vitrina 2D (vf3 y fachada clásica) ---------- */
+.vf3-pf,.vf-pf{cursor:default}
+.vf3-pf .vf3-pfimg{width:var(--S);flex:1 1 auto;height:auto;min-height:0}
+.vf3-pf .vf3-pfimg img{object-fit:cover;padding:0}
+.vf3-pf .vf3-info{flex:none}
+.vf3-pf .vf3-title{display:block;max-width:100%;font-size:var(--fp,18px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1a1030}
+.vf-pf .vf-pfimg img{object-fit:cover}
+.ps-edctl{min-width:0}

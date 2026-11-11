@@ -1,0 +1,148 @@
+/* =====================================================================
+   Mi Shopper Miami — Ficha de clienta (caja, Mi cuenta) y "Clientes" de Cheryl
+   Solo usa variables del tema (--ink, --ink-muted, --line, --paper, --red, --r…) y las
+   piezas existentes (.card, .in, .btn, .pill, label.f): cambia junto con el tema.
+   Texto mínimo 14 px; campos de 16 px (en iPhone no hace zoom al escribir).
+   ===================================================================== */
+
+.cli-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Paso "Datos de envío" en la caja ---------- */
+.cli-step{margin:18px 0 4px;padding:16px 14px;border-radius:var(--r);background:color-mix(in srgb,var(--paper) 70%,transparent);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);scroll-margin-top:70px}
+.cli-step-h{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cli-step-h h3{margin:0}
+.cli-lead{font-size:14.5px;line-height:1.45;margin:6px 0 2px;color:var(--ink-muted)}
+.cli-code{display:inline-block;font-size:14px;font-weight:600;letter-spacing:.06em;padding:4px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px currentColor;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cli-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cli-acts .btn{flex:1 1 auto;min-height:44px}
+.cli-acts-top{margin:10px 0 0}
+.cli-acts-top .btn{flex:0 0 auto}
+
+/* Resumen */
+.cli-sum{display:grid;gap:10px;margin-top:12px;font-size:15px;line-height:1.45}
+.cli-sum-r{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:start;padding-top:10px;border-top:1px solid var(--line)}
+.cli-sum-r:first-child{border-top:0;padding-top:0}
+.cli-k{font-size:14px;color:var(--ink-muted);letter-spacing:.02em}
+.cli-v{overflow-wrap:anywhere}
+
+/* Formulario */
+.cli-form{margin-top:6px}
+.cli-fs{border:0;margin:0;padding:0;min-width:0}
+.cli-fs legend{font-size:15px;font-weight:600;padding:0;margin:16px 0 0;color:var(--ink)}
+.cli-f{min-width:0}
+.cli-f .in{width:100%;min-height:48px;font-size:16px;box-sizing:border-box}
+.cli-f select.in{appearance:auto}
+.cli-two{display:grid;grid-template-columns:1fr;gap:0 12px}
+@media (min-width:560px){.cli-two{grid-template-columns:1fr 1fr}}
+.cli-opt{font-weight:400;letter-spacing:0;color:var(--ink-muted);text-transform:none}
+.cli-hint{display:block;font-size:14px;color:var(--ink-muted);margin-top:4px}
+.cli-err{display:block;font-size:14px;line-height:1.35;color:var(--red);min-height:0}
+.cli-err:empty{display:none}
+.cli-err:not(:empty){margin-top:5px}
+.cli-f.bad .in{box-shadow:0 0 0 2px var(--red)!important}
+.cli-tel{display:flex;align-items:stretch;gap:6px}
+.cli-pre{display:flex;align-items:center;padding:0 10px;font-size:16px;font-weight:600;border-radius:4px;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-variant-numeric:tabular-nums}
+.cli-tel .in{flex:1}
+.cli-check{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px;min-height:44px;cursor:pointer;color:var(--ink)}
+.cli-check input{width:22px;height:22px;flex:none}
+
+/* Interruptor de factura */
+.cli-switch{position:relative;display:flex;align-items:flex-start;gap:12px;margin-top:18px;padding:14px;border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;color:var(--ink)}
+.cli-switch input{position:absolute;opacity:0;width:52px;height:30px;margin:0;cursor:pointer}
+.cli-sw{flex:none;position:relative;width:48px;height:28px;border-radius:999px;background:var(--line);box-shadow:inset 0 1px 2px rgba(0,0,0,.25);transition:background .2s}
+.cli-sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.35);transition:transform .2s}
+.cli-switch input:checked + .cli-sw{background:var(--green)}
+.cli-switch input:checked + .cli-sw::after{transform:translateX(20px)}
+.cli-switch input:focus-visible + .cli-sw{outline:2px solid var(--ink);outline-offset:2px}
+.cli-sw-t{display:flex;flex-direction:column;gap:3px}
+.cli-sw-t b{font-size:15.5px}
+.cli-sw-t small{font-size:14px;line-height:1.4;color:var(--ink-muted)}
+.cli-bill{margin-top:4px}
+@media (prefers-reduced-motion:reduce){.cli-sw,.cli-sw::after{transition:none}}
+
+/* Boleta: bloque de la clienta */
+.cli-vcust{display:flex;flex-direction:column;gap:2px;margin:8px 0 4px;padding:8px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);font-size:14px;line-height:1.4}
+.cli-vinv{margin-top:3px}
+
+/* Pedidos (Cheryl): N° y factura en la tarjeta */
+.cli-otag{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:6px}
+.cli-oaddr{flex-basis:100%;font-size:14px;overflow-wrap:anywhere}
+.cli-flash{animation:cliFlash 2.2s ease-out}
+@keyframes cliFlash{0%,30%{box-shadow:0 0 0 3px var(--green)}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ---------- Mi cuenta ---------- */
+.cli-cuenta{display:contents}
+.cli-card{font-size:15px}
+.cli-me{margin-bottom:14px}
+.cli-me-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.cli-bigcode{display:block;font-size:24px;letter-spacing:.05em;font-variant-numeric:tabular-nums;margin-top:2px}
+.cli-bigcode.cli-none{font-size:16px;letter-spacing:0;font-weight:600}
+.cli-hist{display:flex;flex-direction:column;gap:10px}
+.cli-ord{display:flex;flex-direction:column;gap:4px}
+.cli-hist > .cli-ord:not(.card){padding:12px 0;border-top:1px solid var(--line)}
+.cli-hist > .cli-ord:not(.card):first-child{border-top:0;padding-top:4px}
+.cli-ord-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.cli-prods{margin:4px 0 2px;padding-left:18px;font-size:14.5px;line-height:1.45}
+.cli-ord .btn{align-self:flex-start;margin-top:6px}
+.cli-ord-a{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px}
+.cli-ord-a .btn{margin-top:0}
+.cli-sheetform{margin-top:-4px}
+.cli-sheet-acts{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+
+/* ---------- Cheryl: lista de clientas ---------- */
+.cli-shop{display:flex;flex-direction:column;gap:12px;container-type:inline-size}
+.cli-tools .in{width:100%;min-height:48px;font-size:16px;box-sizing:border-box}
+.cli-tools-r{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.cli-sort{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.cli-sort button{font:inherit;font-size:14px;min-height:40px;padding:0 12px;border-radius:999px;border:0;cursor:pointer;color:var(--ink);background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.cli-sort button[aria-pressed="true"]{color:var(--paper);background:var(--ink);box-shadow:none;font-weight:600}
+.cli-count{margin:0;font-size:14px;color:var(--on-night-muted,var(--ink-muted))}
+.cli-table{padding:4px 0;overflow:hidden}
+.cli-th{display:none}
+.cli-row{display:grid;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-top:1px solid var(--line);cursor:pointer;
+  grid-template-columns:1fr auto;grid-template-areas:"id t" "name name" "n d";gap:2px 10px;padding:12px 14px;min-height:64px}
+.cli-row:first-of-type,.cli-th + .cli-row{border-top:0}
+.cli-row:hover{background:color-mix(in srgb,var(--line) 35%,transparent)}
+.cli-row:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.cli-c-id{grid-area:id;font-size:14px;font-weight:600;letter-spacing:.05em;color:var(--ink-muted);font-variant-numeric:tabular-nums}
+.cli-c-name{grid-area:name;display:flex;flex-direction:column;min-width:0}
+.cli-c-name b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cli-c-name small,.cli-c-n,.cli-c-d{font-size:14px;color:var(--ink-muted)}
+.cli-c-n{grid-area:n}
+.cli-c-t{grid-area:t;font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;text-align:right}
+.cli-c-d{grid-area:d;text-align:right}
+@container (min-width:720px){
+  .cli-th,.cli-row{grid-template-columns:110px minmax(0,1.6fr) 110px 130px 140px;grid-template-areas:none;align-items:center;gap:12px}
+  .cli-th{display:grid;padding:10px 14px;font-size:14px;color:var(--ink-muted);letter-spacing:.04em;border-bottom:1px solid var(--line)}
+  .cli-th span:nth-child(n+3){text-align:right}
+  .cli-row > *{grid-area:auto}
+  .cli-c-n{text-align:right}
+}
+
+/* ---------- Cheryl: ficha ---------- */
+.cli-ficha{display:flex;flex-direction:column;gap:12px;container-type:inline-size}
+.cli-back{align-self:flex-start}
+.cli-head{display:flex;flex-direction:column;gap:12px}
+.cli-head h2{margin:6px 0 2px;font-size:22px}
+.cli-contact{display:flex;flex-wrap:wrap;gap:8px}
+.cli-contact .btn{flex:1 1 90px;min-height:46px;text-align:center}
+.cli-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cli-kpi{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:var(--r);background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.cli-kpi span,.cli-kpi small{font-size:14px;color:var(--ink-muted)}
+.cli-kpi b{font-size:20px;font-variant-numeric:tabular-nums}
+.cli-cols{display:grid;grid-template-columns:1fr;gap:12px;align-items:start}
+.cli-col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cli-sec-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.cli-sec-h h3,.cli-col h3{margin:0 0 8px}
+.cli-sec-h h3{margin:0}
+.cli-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}
+.cli-dl dt{color:var(--ink-muted);font-size:14px}
+.cli-dl dd{margin:0;overflow-wrap:anywhere}
+.cli-note{width:100%;min-height:110px;font-size:16px;box-sizing:border-box;resize:vertical}
+.cli-note-r{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+@container (min-width:600px){
+  .cli-head{flex-direction:row;align-items:flex-end;justify-content:space-between}
+  .cli-contact .btn{flex:0 0 auto;min-width:110px}
+  .cli-kpis{grid-template-columns:repeat(4,1fr)}
+  .cli-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+}

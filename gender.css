@@ -1,0 +1,122 @@
+/* =====================================================================
+   Catálogo Mujer / Hombre, selector de tienda al publicar y panel "Mis tiendas".
+   Archivo propio (no toca material.css ni los tech_*.css). Texto mínimo 14 px, botones ≥ 44 px.
+   ===================================================================== */
+
+/* ---------- Clienta: placas "Mujer" / "Hombre" al entrar ---------- */
+.gask-h{margin:0 0 4px;font:600 22px/1.2 "Bodoni Moda",Georgia,serif}
+.gask-p{margin:0 0 14px;font-size:15px;color:var(--ink-muted,#5a5266)}
+.gask-in{padding:18px 14px 24px;text-align:center}
+.gask-in .gask-h{color:inherit}
+.gplates{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gplate{position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;min-height:200px;padding:14px;border:0;border-radius:10px;
+  overflow:hidden;cursor:pointer;color:#fff;background:#1d1a22;text-align:left;box-shadow:0 2px 10px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.12)}
+.gplate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:transform .35s}
+.gplate::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.78) 100%)}
+.gplate>span{position:relative;z-index:2}
+.gplate-n{font:600 28px/1.05 "Bodoni Moda",Georgia,serif;letter-spacing:.01em;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.gplate-s{font-size:14px;opacity:.9;margin-top:2px}
+.gplate:hover img,.gplate:focus-visible img{transform:scale(1.04)}
+.gplate:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media (min-width:700px){.gplate{min-height:260px}.gask-in{max-width:640px;margin:0 auto}}
+
+/* selector permanente arriba en la barra del catálogo (c3) */
+.gsel{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:8px 8px 2px;border-radius:999px;padding:3px;background:rgba(20,16,26,.08);box-shadow:inset 0 0 0 1px rgba(20,16,26,.14)}
+.gsel-b{min-height:44px;border:0;border-radius:999px;background:transparent;color:inherit;font:600 16px/1 Jost,system-ui,sans-serif;letter-spacing:.02em;cursor:pointer}
+.gsel-b.on{background:#1d1a22;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+@media (min-width:900px){.c3 .c3-ctrl .gsel{grid-column:1/-1;width:min(380px,100%);margin:8px auto 0}}
+
+/* ---------- Shopper: tienda + género al publicar ---------- */
+.pubpick{margin-top:12px;padding:12px;border-radius:10px;background:rgba(20,16,26,.04);box-shadow:inset 0 0 0 1px rgba(20,16,26,.1)}
+.pubpick .f{margin-top:0}
+.pubpick-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px;margin-bottom:8px}
+.stnote{font-size:14px;color:var(--ink-muted,#5a5266)}
+.stnote.need{color:var(--red,#cf3355);font-weight:600}
+.stnote.shake{animation:gshake .35s}
+@keyframes gshake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.stpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stp{position:relative;display:flex;align-items:flex-end;min-height:84px;aspect-ratio:1/0.82;padding:0;border:0;border-radius:8px;overflow:hidden;cursor:pointer;background:#222;color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.stp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
+.stp::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.82) 100%)}
+.stp span{position:relative;z-index:1;width:100%;padding:0 6px 7px;font:600 14px/1.15 Jost,system-ui,sans-serif;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.stp.on{box-shadow:0 0 0 3px #fff,0 0 0 6px #1d1a22}
+.stp.on::before{content:"✓";position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;background:#fff;color:#1d1a22;font:700 16px/26px Jost,system-ui,sans-serif;text-align:center}
+.stp:not(.on){filter:saturate(.85)}
+@media (min-width:700px){.stpick{grid-template-columns:repeat(5,1fr)}}
+.gpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gpick-b{min-height:56px;border:0;border-radius:8px;background:#fff;color:#1d1a22;font:600 18px/1 Jost,system-ui,sans-serif;cursor:pointer;box-shadow:inset 0 0 0 1.5px rgba(20,16,26,.25)}
+.gpick-b.on{background:#1d1a22;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.gpick-help{margin-top:6px;font-size:14px;color:var(--ink-muted,#5a5266)}
+
+/* ---------- Shopper: panel "Mis tiendas" ---------- */
+.pn-lede{margin:0 0 12px;font-size:15px;opacity:.85}
+.pn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:700px){.pn-grid{grid-template-columns:repeat(3,1fr)}}
+.pn-tile{position:relative;display:flex;flex-direction:column;justify-content:flex-end;aspect-ratio:1/1;padding:0;border:0;border-radius:10px;overflow:hidden;cursor:pointer;background:#222;color:#fff;text-align:left;
+  box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.pn-tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pn-tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.86) 100%)}
+.pn-tile>span{position:relative;z-index:1}
+.pn-tn{padding:0 10px;font:600 18px/1.15 "Bodoni Moda",Georgia,serif;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.pn-tc{display:flex;gap:6px;flex-wrap:wrap;padding:6px 10px 10px;font-size:14px}
+.pn-tc>span{padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px)}
+.pn-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:10px}
+.pn-name{margin:0;flex:1 1 auto;font:600 24px/1.1 "Bodoni Moda",Georgia,serif}
+.pn-hc{font-size:15px;opacity:.85}
+.pn-back,.pn-head .btn{min-height:44px;font-size:15px}
+.pn-zone{margin:14px 0 18px}
+.pn-zh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 8px;font:600 19px/1.2 Jost,system-ui,sans-serif}
+.pn-zh span{font-size:14px;font-weight:400;opacity:.8}
+.pn-zv{padding:10px;border-radius:12px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22)}
+.pn-prev{position:relative;border-radius:8px;overflow:hidden;margin-bottom:10px;pointer-events:none;background:#111}
+.pn-prev .vf3-door{display:none}
+.pn-prev .vf3-screen{margin:0}
+.pn-note{margin:0 0 10px;font-size:14px;opacity:.85}
+.pn-list{display:grid;gap:10px}
+@media (min-width:900px){.pn-list{grid-template-columns:1fr 1fr}}
+.pn-empty{padding:16px;border-radius:10px;font-size:15px;text-align:center;background:rgba(255,255,255,.06)}
+.pn-card{padding:12px;border-radius:10px;background:var(--paper,#fffbf6);color:var(--ink,#241b4d);box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:15px}
+.pn-card.gone{opacity:.7}
+.pn-card.pn-vit{box-shadow:0 0 0 2px #1d1a22,0 2px 10px rgba(0,0,0,.2)}
+.pn-card.drag{opacity:.5}.pn-card.over{box-shadow:0 0 0 3px #2f5aa8}
+.pn-top{display:flex;align-items:center;gap:10px}
+.pn-pos{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#1d1a22;color:#fff;font:700 16px/1 Jost,system-ui,sans-serif}
+.pn-thumb{flex:none;width:64px;height:64px;border-radius:8px;overflow:hidden;background:#eee;display:grid;place-items:center}
+.pn-thumb img{width:100%;height:100%;object-fit:cover}
+.pn-txt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.pn-t{font-size:16px;line-height:1.2}
+.pn-m{font-size:14px;color:var(--ink-muted,#5a5266)}
+.pn-arrows{flex:none;display:flex;flex-direction:column;gap:6px}
+.pn-ar{width:48px;height:44px;border:0;border-radius:8px;background:#1d1a22;color:#fff;font:700 20px/1 Jost,system-ui,sans-serif;cursor:pointer}
+.pn-ar:disabled{opacity:.25;cursor:default}
+.pn-move{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:48px;margin-top:10px;border:0;border-radius:8px;font:600 16px/1.1 Jost,system-ui,sans-serif;cursor:pointer}
+.pn-move.in{background:#1d1a22;color:#fff}
+.pn-move.out{background:transparent;color:#1d1a22;box-shadow:inset 0 0 0 1.5px #1d1a22}
+.pn-move .ico{width:20px;height:20px}
+.pn-g{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.pn-gfix{display:block;font-size:14px;color:var(--ink-muted,#5a5266)}
+.pn-gb{min-height:44px;border:0;border-radius:8px;background:#fff;color:#1d1a22;font:600 15px/1 Jost,system-ui,sans-serif;cursor:pointer;box-shadow:inset 0 0 0 1.5px rgba(20,16,26,.22)}
+.pn-gb.on{background:#1d1a22;color:#fff;box-shadow:none}
+.pn-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.pn-card .pn-acts .btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;margin:0;padding:6px 8px;border:0;border-radius:8px;
+  font:600 14px/1.15 Jost,system-ui,sans-serif!important;letter-spacing:.01em!important;text-transform:none!important;text-shadow:none!important;
+  background:#fff!important;color:#1d1a22!important;box-shadow:inset 0 0 0 1.5px rgba(20,16,26,.22)!important}
+.pn-card .pn-acts .btn .ico{width:18px;height:18px}
+.pn-card .pn-acts .btn.gold{background:#1d1a22!important;color:#fff!important;box-shadow:none!important}
+.pn-card .pn-acts .btn.dv-del{grid-column:1/-1;color:#b3263b!important;box-shadow:inset 0 0 0 1.5px rgba(179,38,59,.45)!important}
+@media (min-width:900px){.pn-acts{grid-template-columns:repeat(3,1fr)}}
+.pn-swap{display:grid;gap:8px}
+.pn-sw{display:flex;align-items:center;gap:10px;min-height:64px;padding:8px;border:0;border-radius:10px;background:#fff;color:#1d1a22;text-align:left;font-size:15px;cursor:pointer;box-shadow:inset 0 0 0 1.5px rgba(20,16,26,.2)}
+.pn-sw .pn-thumb{width:52px;height:52px}
+/* Selección múltiple de vencidas/agotadas */
+.pn-oldhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pn-oldhead .section-title{margin-right:auto}
+.pn-selbar{position:sticky;top:calc(var(--hdr-h,64px) + 6px);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 10px;padding:10px 12px;border-radius:10px;background:var(--paper,#fffbf6);color:var(--ink,#241b4d);box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.pn-selall{display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px;cursor:pointer}
+.pn-selall input,.pn-chk input{width:22px;height:22px;accent-color:#7b3fe4;margin:0}
+.pn-selecting .pn-card{position:relative;cursor:pointer;padding-left:48px}
+.pn-selecting .pn-card > :not(.pn-top):not(.pn-chk){display:none}
+.pn-selecting .pn-card *{pointer-events:none}
+.pn-chk{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:flex}
+.pn-card.pn-picked{box-shadow:0 0 0 2.5px #7b3fe4,0 2px 10px rgba(0,0,0,.2)}

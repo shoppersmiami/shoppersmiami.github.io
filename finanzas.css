@@ -1,0 +1,130 @@
+/* =====================================================================
+   Mi Shopper Miami — Centro financiero (finanzas.js)
+   Usa las variables y fuentes de styles.css (Bodoni Moda, Jost, dorados --lx-*).
+   Paleta del gráfico validada (dataviz): ventas #5446a0 · comisión #a37528.
+   ===================================================================== */
+.tab[data-tab="finanzas"]{--ti:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 20.5h17'/%3E%3Cpath d='M6 20.5v-6h3v6M10.5 20.5V9h3v11.5M15 20.5v-8.5h3v8.5'/%3E%3Cpath d='M5 9.5l4.5-4 3.5 2.5 5.5-4.5'/%3E%3C/svg%3E")}
+
+.fin{--fin-s:#5446a0;--fin-c:#a37528;--fin-up:#1d5a3f;--fin-down:#8a2430;font-size:15px}
+.fin .view-back{margin-top:6px}
+.fin-body{display:flex;flex-direction:column;gap:16px}
+
+/* Selector de período */
+.fin-bar-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.fin-seg{display:flex;padding:2px;border-radius:3px;box-shadow:inset 0 0 0 1px var(--lx-hair-gold,rgba(176,140,78,.42));flex:1 1 100%}
+.fin-seg button{flex:1;min-height:44px;border:0;background:none;border-radius:2px;cursor:pointer;color:#e6dccb;
+  font:500 14px/1 Jost,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.fin-seg button.on{background:var(--lx-gold,#c9a96a),#c9a96a;color:#21180a;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.3)}
+.fin-nav{display:flex;align-items:center;gap:6px;flex:1 1 auto;min-width:0}
+.fin-arw{flex:none;width:44px;height:44px;border:0;border-radius:50%;cursor:pointer;color:#f0e2c2;background:rgba(255,255,255,.04);
+  box-shadow:inset 0 0 0 1px rgba(214,185,130,.42);font:400 26px/1 "Bodoni Moda",Georgia,serif;display:grid;place-items:center;padding-bottom:3px}
+.fin-arw:disabled{opacity:.3;cursor:default}
+.fin-ptitle{flex:1;min-width:0;text-align:center;font:500 20px/1.2 "Bodoni Moda",Didot,Georgia,serif;color:#f3ead8}
+.fin-today{flex:none;border:0;background:none;color:var(--lx-champ,#e6d3a8);font:500 14px Jost,sans-serif;letter-spacing:.06em;text-decoration:underline;text-underline-offset:4px;cursor:pointer;min-height:44px;padding:0 4px}
+
+/* Totales */
+.fin-kpis{padding:20px 18px}
+.fin-k{display:block;font:500 14px/1.3 Jost,sans-serif;letter-spacing:.06em;color:var(--lx-ink-muted,#51495a)}
+.fin-hero{padding-bottom:16px;margin-bottom:14px;border-bottom:1px solid rgba(176,140,78,.32)}
+.fin-hv{display:block;font:500 40px/1.1 "Bodoni Moda",Didot,Georgia,serif;color:var(--lx-ink,#1c1724);margin:4px 0 6px;overflow-wrap:anywhere}
+.fin-tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px}
+.fin-tile{min-width:0}
+.fin-v{display:block;font:500 23px/1.2 "Bodoni Moda",Didot,Georgia,serif;color:var(--lx-ink,#1c1724);margin:3px 0 4px;overflow-wrap:anywhere}
+.fin-delta{display:block;font:400 14px/1.35 Jost,sans-serif;color:var(--lx-ink-muted,#51495a)}
+.fin-delta.up{color:var(--fin-up)} .fin-delta.down{color:var(--fin-down)}
+.fin-arrow{font-weight:600;margin-right:3px}
+
+/* Gráfico */
+.fin-chart-card{position:relative;padding:18px 16px 14px}
+.fin-chart-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin-bottom:10px}
+.fin-chart-h h3{font-size:19px;line-height:1.2}
+.fin-legend{display:flex;gap:14px;font:400 14px Jost,sans-serif;color:var(--lx-ink-2,#4a4252)}
+.fin-legend span{display:inline-flex;align-items:center;gap:6px}
+.fin-legend .sw{width:12px;height:12px;border-radius:2px;display:inline-block}
+.sw.s,.fin-bar.s{background:var(--fin-s);fill:var(--fin-s)}
+.sw.c,.fin-bar.c{background:var(--fin-c);fill:var(--fin-c)}
+.fin-chart{width:100%;overflow:hidden}
+.fin-svg{display:block;max-width:100%;height:auto;overflow:visible;font-family:Jost,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.fin-grid{stroke:rgba(28,23,36,.10);stroke-width:1}
+.fin-grid.base{stroke:rgba(28,23,36,.32)}
+.fin-tick{font-size:14px;fill:#5d5566}
+.fin-xl{font-size:14px;fill:#3e3747}
+.fin-xl.sub{fill:#6a6273}
+.fin-peak{font-size:14px;font-weight:500;fill:var(--lx-ink,#1c1724)}
+.fin-hit{fill:transparent}
+.fin-col{cursor:pointer;outline:none}
+.fin-col.hot .fin-hit,.fin-col:focus-visible .fin-hit{fill:rgba(168,130,63,.10)}
+.fin-col.hot .fin-bar{filter:brightness(1.12)}
+.fin-tip{position:absolute;z-index:3;min-width:170px;padding:10px 12px;border-radius:4px;pointer-events:none;
+  background:#1c1724;color:#f3ead8;box-shadow:0 10px 24px -10px rgba(0,0,0,.6),inset 0 0 0 1px rgba(214,185,130,.35);font:400 14px/1.4 Jost,sans-serif}
+.fin-tip-h{color:#d9cdb6;margin-bottom:4px}
+.fin-tip-r{display:flex;align-items:center;gap:8px}
+.fin-tip-r b{font-weight:600;font-variant-numeric:tabular-nums}
+.fin-tip-r span{color:#bfb3c9}
+.fin-tip .ln{display:inline-block;width:14px;height:2px;border-radius:1px}
+.fin-tip .ln.s{background:#9b8ff0}.fin-tip .ln.c{background:#d9ad5c}
+.fin-tip-n{color:#bfb3c9;margin-top:2px}
+.fin-table{margin-top:8px;font-size:14px}
+.fin-table summary{cursor:pointer;color:var(--lx-gold-dk,#7a5a24);font-weight:500;min-height:40px;display:flex;align-items:center}
+.fin-table table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.fin-table th,.fin-table td{padding:7px 4px;text-align:right;border-bottom:1px solid rgba(28,23,36,.08)}
+.fin-table th:first-child,.fin-table td:first-child{text-align:left}
+.fin-table th{font-weight:500;color:var(--lx-ink-muted,#51495a)}
+.fin-table tfoot td{font-weight:600;border-bottom:0;border-top:1px solid rgba(28,23,36,.3)}
+
+/* Acciones */
+.fin-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fin-actions #fin-add{grid-column:1/-1}
+.fin-actions .btn{font-size:14px}
+.fin-actions .btn.ghost{color:#f0e2c2}
+
+/* Lista de ventas */
+.fin-lh{display:flex;align-items:baseline;gap:10px;margin:8px 0 0}
+.fin-lh span{font:400 15px Jost,sans-serif;color:#b3a9bd}
+.fin-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.fin-sale{background:var(--lx-calacatta,#f7f4ef);color:var(--lx-ink,#1c1724);border-radius:4px;padding:14px 16px;
+  box-shadow:inset 0 0 0 1px rgba(176,140,78,.22),inset 0 1px 0 rgba(255,255,255,.8),var(--lx-sh-1,0 2px 6px rgba(0,0,0,.2))}
+.fin-sale-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.fin-sale-date{font:400 14px Jost,sans-serif;color:var(--lx-ink-muted,#51495a);letter-spacing:.02em}
+.fin-sale .pill{font-size:14px}
+.fin-sale-main{display:flex;gap:14px;align-items:flex-start}
+.fin-sale-who{flex:1;min-width:0}
+.fin-sale-who b{display:block;font:500 18px/1.25 "Bodoni Moda",Georgia,serif}
+.fin-sale-items{display:block;font-size:14.5px;line-height:1.4;color:var(--lx-ink-2,#4a4252);margin-top:2px;overflow-wrap:anywhere}
+.fin-sale-amt{flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.fin-sale-amt b{display:block;font:500 18px/1.25 "Bodoni Moda",Georgia,serif;white-space:nowrap}
+.fin-sale-amt span{display:block;font-size:14px;color:var(--fin-c-text,#6e4b0d);white-space:nowrap;margin-top:2px}
+.fin-sale-act{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.fin-sale-act .btn{min-height:44px}
+.fin-del{color:#8a2430!important}
+.fin-note{font-size:14px;line-height:1.5;color:#b3a9bd;margin:4px 0 8px}
+
+/* Formulario y confirmación (en la hoja) */
+.fin-form-lead{margin:-6px 0 4px}
+.fin-form .in{font-size:16px;min-height:46px}
+.fin-sug{margin-top:8px;min-height:20px}
+.fin-err{color:#8a2430;font-size:14px;margin-top:6px;min-height:0}
+.fin-err:empty{display:none}
+.fin-confirm{font-size:16px;line-height:1.5;margin:0 0 16px}
+.btn.fin-del-ok{background:#7d2130;color:#fff3f0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 8px 16px -10px rgba(0,0,0,.55)}
+
+@media (max-width:370px){
+  .fin-hv{font-size:34px}
+  .fin-tiles{gap:14px 10px}
+  .fin-v{font-size:20px}
+  .fin-sale-main{flex-direction:column;gap:6px}
+  .fin-sale-amt{text-align:left}
+}
+@media (min-width:760px){
+  .page:not(.immersive):has(> .fin){max-width:1040px}
+  .fin-seg{flex:0 0 340px}
+  .fin-nav{flex:1 1 auto;justify-content:flex-end}
+  .fin-ptitle{flex:0 1 auto;min-width:260px}
+  .fin-tiles{grid-template-columns:repeat(4,1fr)}
+  .fin-kpis{display:grid;grid-template-columns:minmax(0,1fr);padding:24px 26px}
+  .fin-hv{font-size:48px}
+  .fin-actions{display:flex;justify-content:flex-start}
+  .fin-actions #fin-add{grid-column:auto}
+  .fin-actions .btn{min-width:180px}
+  .fin-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+}
