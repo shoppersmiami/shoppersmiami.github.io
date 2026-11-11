@@ -763,7 +763,7 @@ async function renderClient(unread) {
   const titles = { encargos: "Encargos", pedidos: "Mis pedidos y casilla", cuenta: "Mi cuenta" };
   const shops = shopList();
   // "PRONTO": tiendas que aún no tienen productos (salvo Michael Kors). Se quita sola cuando Cheryl publica ahí.
-  const soon = new Set(shops.filter((x) => x.cat !== "Carteras" && !x.n).map((x) => x.cat));
+  const soon = new Set(shops.filter((x) => x.cat !== "Carteras" && (!x.n || x.cat === LAST)).map((x) => x.cat));
   if (window.MSSigns) { const prev = (window.MSSigns.soon || []).join(); window.MSSigns.soon = [...soon]; if (prev !== window.MSSigns.soon.join()) try { window.MallWalk?.refreshOffers?.(); } catch {} }
   const active = state.tab === "ofertas" ? (state.mallView === "mall" ? "mall" : state.cat) : state.tab === "caja" ? "caja" : "";
   $("#app").innerHTML = `
