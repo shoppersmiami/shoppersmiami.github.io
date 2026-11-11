@@ -1081,7 +1081,7 @@ function goStore(cat) {
   const from = state.tab === "ofertas" && state.cat && state.cat !== "__search" ? state.cat : null;
   // caminata real en primera persona (walk.js, escena v2): afiches reales de cada vitrina; tocar uno abre la oferta
   const wPick = (o) => ({ o, badge2: Number(o.discount1_pct) > 0 && Number(o.discount2_pct) > 0 && discOf(o) ? "−" + fmtPct(o.discount2_pct) + "% EXTRA" : "", img: (photosOf(o)[0] || {}).url || "", brand: o.brand || "", title: o.title || "", price: clp(quote(o.price_usd, o).clp), badge: discOf(o) ? "−" + fmtPct(Number(o.discount1_pct) > 0 && Number(o.discount2_pct) > 0 ? o.discount1_pct : o.discount_pct) + "%" : is2x1(o) ? "2×1" : "" });
-  if (!toMall && window.MallWalk && window.MallWalk.play({ from, to: cat, label: labels[labels.length - 1], done: arrive, picks: (c) => (window.MSCampanas ? window.MSCampanas.picks3d(c, wPick) : vitrinaPicks(c).map(wPick)), open: (p) => vf3Viewer(p.o), campaign: (c) => campaignFor(c), showPosters: true })) return;   // picks = las 4 pantallas en orden (campanas.js); campaign → null
+  if (!toMall && window.MallWalk && window.MallWalk.play({ interrupt: true, from, to: cat, label: labels[labels.length - 1], done: arrive, picks: (c) => (window.MSCampanas ? window.MSCampanas.picks3d(c, wPick) : vitrinaPicks(c).map(wPick)), open: (p) => vf3Viewer(p.o), campaign: (c) => campaignFor(c), showPosters: true })) return;   // picks = las 4 pantallas en orden (campanas.js); campaign → null
   if (walkRendered(from, toMall ? null : cat, arrive, labels[labels.length - 1])) return;
   walk(labels, arrive, toMall ? null : side);
 }
@@ -2381,6 +2381,61 @@ const VIEWS = {
   },
 };
 // Centro financiero de la shopper (finanzas.js / finanzas.css): ruta #finanzas
+// ---------- Foto grande (doble toque en la ficha): carrusel + zoom con dos dedos, doble toque o rueda del mouse ----------
+function openLightbox(photos, start, title, onChange) {
+  if (!photos || !photos.length) return;
+  let i = start || 0, z = 1, px = 0, py = 0;
+  const box = document.createElement("div");
+  box.className = "lbx"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", "Foto ampliada: " + (title || ""));
+  box.innerHTML = `<div class="lbx-stage"><img class="lbx-img" alt="" draggable="false"></div>
+    <button type="button" class="lbx-x" aria-label="Cerrar">×</button>
+    ${photos.length > 1 ? `<button type="button" class="lbx-nav lbx-prev" aria-label="Foto anterior">‹</button><button type="button" class="lbx-nav lbx-next" aria-label="Foto siguiente">›</button><div class="lbx-count" aria-live="polite"></div>` : ""}
+    <div class="lbx-hint">Pellizca o toca dos veces para acercar</div>`;
+  document.body.appendChild(box);
+  const im = box.querySelector(".lbx-img"), stage = box.querySelector(".lbx-stage"), cnt = box.querySelector(".lbx-count");
+  const apply = (anim) => { im.style.transition = anim ? "transform .25s ease" : "none"; im.style.transform = `translate(${px}px,${py}px) scale(${z})`; };
+  const clampPan = () => { const r = stage.getBoundingClientRect(), mx = (r.width * (z - 1)) / 2, my = (r.height * (z - 1)) / 2; px = Math.max(-mx, Math.min(mx, px)); py = Math.max(-my, Math.min(my, py)); };
+  const go = (n) => { if (n < 0 || n >= photos.length) return; i = n; z = 1; px = py = 0; im.src = photos[i].url; im.alt = photos[i].caption || title || ""; if (cnt) cnt.textContent = `${i + 1} / ${photos.length}`; apply(false); onChange && onChange(i); };
+  const close = () => { document.removeEventListener("keydown", key); box.remove(); };
+  const key = (e) => { if (e.key === "Escape") close(); else if (e.key === "ArrowRight") go(i + 1); else if (e.key === "ArrowLeft") go(i - 1); };
+  document.addEventListener("keydown", key);
+  box.querySelector(".lbx-x").onclick = close;
+  const pv = box.querySelector(".lbx-prev"), nx = box.querySelector(".lbx-next");
+  if (pv) pv.onclick = () => go(i - 1); if (nx) nx.onclick = () => go(i + 1);
+  // gestos: 1 dedo = deslizar (o mover si hay zoom), 2 dedos = pellizcar
+  const pts = new Map(); let g = null, last = 0;
+  stage.addEventListener("pointerdown", (e) => {
+    stage.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const a = [...pts.values()];
+    g = a.length === 2 ? { d: Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y), z } : { x: e.clientX, y: e.clientY, px, py, t: Date.now() };
+    box.querySelector(".lbx-hint")?.remove();
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (!pts.has(e.pointerId) || !g) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const a = [...pts.values()];
+    if (a.length === 2 && g.d) { z = Math.max(1, Math.min(5, g.z * Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) / g.d)); clampPan(); apply(false); }
+    else if (a.length === 1 && g.x != null) { if (z > 1) { px = g.px + (e.clientX - g.x); py = g.py + (e.clientY - g.y); clampPan(); } else { px = e.clientX - g.x; py = 0; } apply(false); }
+  });
+  const up = (e) => {
+    const had = pts.size; pts.delete(e.pointerId);
+    if (!g) return;
+    if (had === 2) { g = null; if (z <= 1.02) { z = 1; px = py = 0; apply(true); } return; }
+    if (g.x == null) { g = null; return; }
+    const dx = e.clientX - g.x, dy = e.clientY - g.y, dt = Date.now() - g.t; g = null;
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && dt < 300) {
+      const now = Date.now();
+      if (now - last < 350) { last = 0; if (z > 1) { z = 1; px = py = 0; } else { const r = stage.getBoundingClientRect(); z = 2.5; px = (r.left + r.width / 2 - e.clientX) * 1.5; py = (r.top + r.height / 2 - e.clientY) * 1.5; clampPan(); } return apply(true); }
+      last = now; return;
+    }
+    if (z === 1) { if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) go(i + (dx < 0 ? 1 : -1)); else { px = 0; apply(true); } if (Math.abs(dy) > 120 && Math.abs(dy) > Math.abs(dx)) close(); }
+  };
+  stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
+  stage.addEventListener("wheel", (e) => { e.preventDefault(); z = Math.max(1, Math.min(5, z * (e.deltaY < 0 ? 1.15 : 1 / 1.15))); if (z === 1) px = py = 0; clampPan(); apply(false); }, { passive: false });
+  go(i);
+  box.querySelector(".lbx-x").focus({ preventScroll: true });
+}
+
 window.MSApp = { state, quote, quote2x1, sheet, toast, go, cherylName, APP_NAME };
 VIEWS.finanzas = (view) => (window.MSFinanzas ? window.MSFinanzas.view(view) : (view.innerHTML = `<div class="empty">No se pudo cargar el centro financiero. Recarga la app.</div>`));
 // Base de clientas de la shopper (clientes.js / clientes.css): ruta #clientes
@@ -2719,7 +2774,7 @@ function openOffer(o) {
         </div>
         <div class="countertop"><span class="item-shadow"></span></div>
         ${d ? discBadges(o, "c3-badge") : ""}${is2x1(o) ? `<span class="c3-badge c3-2x1">2×1</span>` : ""}
-        <div class="touch-hint" id="hint">${photos.length > 1 ? "Desliza para ver otra foto · doble toque para acercar" : "Doble toque para acercar"}</div>
+        <div class="touch-hint" id="hint">${photos.length > 1 ? "Desliza para ver más fotos · doble toque para verla en grande" : "Doble toque para verla en grande"}</div>
       </div>
       ${photos.length > 1 ? `<div class="c3-gal" role="group" aria-label="Fotos">${photos.map((p, i) => `<button type="button" class="${i ? "" : "on"}" data-ph="${i}" aria-label="${esc(p.caption || "Foto " + (i + 1))}"><img src="${esc(p.url)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
     </div>
@@ -2760,50 +2815,45 @@ function openOffer(o) {
   const back = root.querySelector(".counter-back"); back.onclick = close; back.focus({ preventScroll: true });
   window.MSEncargos?.offerBadge(root.querySelector(".enc-for-slot"), o);   // "Encontrado especialmente para ti por Cheryl" (encargos.js)
 
-  // Manipular la prenda: arrastrar de lado = girarla, doble toque = acercarse, deslizar rápido = otra foto (el scroll vertical sigue libre)
+  // Fotos en carrusel: deslizar de lado = foto siguiente/anterior; doble toque (o doble clic) = foto grande con zoom
   const handle = root.querySelector("#handle"), item = root.querySelector("#item"), sheen = root.querySelector("#sheen"), img = root.querySelector("#itemimg");
-  let idx = 0, zoom = 1, panX = 0, panY = 0, rx = 0, ry = 0, start = null, lastTap = 0;
-  const setT = (anim) => {
-    item.style.transition = anim ? "transform .5s cubic-bezier(.2,.8,.2,1)" : "none";
-    item.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translate(${panX}px,${panY}px) scale(${zoom})`;
-    sheen.style.background = `radial-gradient(55% 45% at ${50 + ry * 2.2}% ${35 - rx * 2.2}%,rgba(255,255,255,.38),transparent 60%)`;
-  };
+  let idx = 0, dragX = 0, start = null, lastTap = 0, busy = false;
+  if (sheen) sheen.style.background = "radial-gradient(55% 45% at 50% 35%,rgba(255,255,255,.28),transparent 60%)";
+  const setT = (anim) => { item.style.transition = anim ? "transform .32s cubic-bezier(.2,.8,.2,1), opacity .32s" : "none"; item.style.transform = `translateX(${dragX}px)`; };
+  const mark = (i) => root.querySelectorAll("[data-ph]").forEach((b) => { const on = +b.dataset.ph === i; b.classList.toggle("on", on); if (on) b.scrollIntoView({ block: "nearest", inline: "center" }); });
   const show = (i, dir) => {
-    if (!img || i < 0 || i >= photos.length || i === idx) { rx = ry = 0; return setT(true); }
-    const half = dir * 90;
-    item.style.transition = "transform .2s ease-in"; item.style.transform = `rotateY(${-half}deg) scale(.94)`;
+    if (!img || busy || i < 0 || i >= photos.length || i === idx) { dragX = 0; return setT(true); }
+    const w = handle.clientWidth || 320, fast = reduceMotion();
+    busy = true;
+    item.style.transition = fast ? "none" : "transform .22s ease-in, opacity .22s"; item.style.transform = `translateX(${-dir * w}px)`; item.style.opacity = fast ? "1" : "0";
     setTimeout(() => {
-      idx = i; img.src = photos[i].url; rx = 0; ry = half; zoom = 1; panX = panY = 0; setT(false);
-      requestAnimationFrame(() => requestAnimationFrame(() => { ry = 0; setT(true); }));
-      root.querySelectorAll("[data-ph]").forEach((b) => b.classList.toggle("on", +b.dataset.ph === i));
-    }, reduceMotion() ? 0 : 200);
+      idx = i; img.src = photos[i].url; mark(i);
+      item.style.transition = "none"; item.style.transform = `translateX(${dir * w}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => { dragX = 0; item.style.opacity = "1"; setT(!fast); busy = false; }));
+    }, fast ? 0 : 220);
   };
   root.querySelectorAll("[data-ph]").forEach((b) => (b.onclick = () => show(+b.dataset.ph, +b.dataset.ph > idx ? 1 : -1)));
-  handle.addEventListener("pointerdown", (e) => {
-    start = { x: e.clientX, y: e.clientY, t: Date.now(), rx, ry, panX, panY };
-    root.querySelector("#hint").classList.add("gone");
-  });
+  handle.addEventListener("pointerdown", (e) => { start = { x: e.clientX, y: e.clientY, t: Date.now() }; root.querySelector("#hint").classList.add("gone"); });
   handle.addEventListener("pointermove", (e) => {
-    if (!start) return;
+    if (!start || photos.length < 2) return;
     const dx = e.clientX - start.x, dy = e.clientY - start.y;
-    if (zoom > 1) { panX = start.panX + dx / zoom; panY = start.panY + dy / zoom; }
-    else { ry = Math.max(-24, Math.min(24, start.ry + dx * 0.22)); rx = Math.max(-16, Math.min(16, start.rx - dy * 0.18)); }
-    setT(false);
+    if (Math.abs(dx) > Math.abs(dy)) { dragX = dx * ((idx === 0 && dx > 0) || (idx === photos.length - 1 && dx < 0) ? 0.3 : 1); setT(false); }
   });
   const end = (e) => {
     if (!start) return;
     const dx = e.clientX - start.x, dy = e.clientY - start.y, dt = Date.now() - start.t;
     start = null;
-    if (e.type === "pointercancel") { rx = ry = 0; return setT(true); }
-    if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && dt < 260) {
+    if (e.type === "pointercancel") { dragX = 0; return setT(true); }
+    if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && dt < 300) {
       const now = Date.now();
-      if (now - lastTap < 330) { zoom = zoom > 1 ? 1 : 2.2; panX = panY = 0; rx = ry = 0; lastTap = 0; return setT(true); }
-      lastTap = now;
+      if (now - lastTap < 350) { lastTap = 0; dragX = 0; setT(false); return openLightbox(photos, idx, o.title, (i) => { if (i !== idx) { idx = i; img.src = photos[i].url; mark(i); } }); }
+      lastTap = now; dragX = 0; return setT(true);
     }
-    if (zoom === 1 && photos.length > 1 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) && dt < 500) return show(idx + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
-    if (zoom === 1) { rx = ry = 0; setT(true); }
+    if (photos.length > 1 && Math.abs(dx) > Math.max(50, (handle.clientWidth || 320) * 0.18) && Math.abs(dx) > Math.abs(dy)) return show(idx + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+    dragX = 0; setT(true);
   };
   handle.addEventListener("pointerup", end); handle.addEventListener("pointercancel", end); handle.addEventListener("pointerleave", (e) => start && end(e));
+  handle.addEventListener("dblclick", (e) => { e.preventDefault(); if (!lastTap) return; lastTap = 0; openLightbox(photos, idx, o.title, (i) => { if (i !== idx) { idx = i; img.src = photos[i].url; mark(i); } }); });
   setT(false);
 
   const add = root.querySelector("#addcart");
