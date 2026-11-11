@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shoppers Miami · Pasar tus productos a la app nueva</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--ink:#241b4d;--muted:#6b6290;--violet:#7b3fe4;--cyan:#22b8d6;--paper:#fffbf6;--line:#e7e0f5}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 Jost,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:#1d1340}
+  main{max-width:560px;margin:0 auto;padding:22px 16px calc(28px + env(safe-area-inset-bottom,0px))}
+  header{color:#fff;padding:8px 2px 18px}
+  header p{margin:2px 0 0;color:#cfc6ef;font-size:15px}
+  h1{font:600 28px/1.15 "Bodoni Moda",Didot,Georgia,serif;margin:0}
+  .card{background:var(--paper);border-radius:16px;padding:18px 16px;margin:0 0 14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+  h2{font-size:19px;margin:0 0 8px}
+  .muted{color:var(--muted)}
+  label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+  input{width:100%;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+  input:focus-visible,button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+  button{font:700 16px/1 inherit;border:0;border-radius:999px;min-height:52px;padding:0 20px;width:100%;margin-top:16px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--violet),var(--cyan))}
+  button[disabled]{opacity:.55;cursor:default}
+  .ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+  ul.cats{list-style:none;padding:0;margin:8px 0 0}
+  ul.cats li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}
+  .thumbs img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:#eee}
+  .err{color:#b3261e;font-weight:600;margin:10px 0 0}
+  .ok{color:#17733a;font-weight:600}
+  progress{width:100%;height:12px;margin-top:12px}
+  #log{font-size:14px;max-height:220px;overflow:auto;margin-top:10px;padding-left:18px}
+</style>
+</head>
+<body>
+<main>
+  <header><h1>Shoppers Miami</h1><p>Pasar tus productos a la app nueva</p></header>
+
+  <section class="card" id="s-found" aria-live="polite"><h2>Buscando tus productos en este teléfono…</h2></section>
+
+  <section class="card" id="s-login" hidden>
+    <h2>Entra con tu cuenta de la app nueva</h2>
+    <p class="muted">La que creaste en shoppersmiami.github.io con tu correo.</p>
+    <form id="f">
+      <label for="em">Correo</label><input id="em" type="email" autocomplete="email" inputmode="email" required value="castiblanco.cheryl@gmail.com">
+      <label for="pw">Contraseña</label><input id="pw" type="password" autocomplete="current-password" required minlength="6">
+      <p class="err" id="ferr" role="alert" hidden></p>
+      <button type="submit" id="go">Pasar mis productos a la app nueva</button>
+    </form>
+  </section>
+
+  <section class="card" id="s-run" hidden>
+    <h2 id="run-h">Pasando tus productos…</h2>
+    <progress id="pg" max="1" value="0"></progress>
+    <p class="muted" id="run-p">No cierres esta página hasta que termine.</p>
+    <ol id="log"></ol>
+    <button type="button" id="open" hidden onclick="location.href='https://shoppersmiami.github.io/#shopper'">Abrir la app nueva</button>
+  </section>
+</main>
+
+<script type="module">
+const SUPABASE_URL = "https://rgjwuiqeohymbsfrtoyu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnand1aXFlb2h5bWJzZnJ0b3l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3MzcwNzIsImV4cCI6MjEwNjMxMzA3Mn0.rhHFibRyhDvPUcWa-b7Y8D0YVzN5z68zxQVhdDaHIp4";
+const KEY = "ps_demo_v5", DONE = "ps_rescate_done";
+const $ = (s) => document.querySelector(s);
+const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const isData = (u) => typeof u === "string" && u.startsWith("data:");
+const NAMES = { Carteras: "Michael Kors", Zapatos: "Zapatos", Deportes: "Ropa Deportiva", Relojes: "Relojes y Joyas", Lenceria: "Lencería", Invierno: "Ropa Invierno", Ropa: "Ropa Mujer", RopaHombre: "Ropa Hombre", __ultimo: "Ofertas", Otros: "Outlet" };
+
+// ---------- 1. Leer lo guardado en este teléfono (IndexedDB y localStorage, el más nuevo) ----------
+function idbGet() {
+  return new Promise((res) => {
+    try {
+      const r = indexedDB.open("shoppers_demo", 1);
+      r.onupgradeneeded = () => r.result.createObjectStore("kv");
+      r.onsuccess = () => { try { const q = r.result.transaction("kv").objectStore("kv").get(KEY); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); } catch (e) { res(null); } };
+      r.onerror = () => res(null);
+    } catch (e) { res(null); }
+  });
+}
+let ls = null; try { ls = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+const idb = await idbGet();
+const db = idb && (!ls || (Number(idb._ts) || 0) > (Number(ls._ts) || 0)) ? idb : ls;
+const done = new Set(JSON.parse(localStorage.getItem(DONE) || "[]"));
+
+// Productos de ella = los que tienen foto subida desde el teléfono (los de prueba traen fotos de la app)
+const hasOwnPhoto = (o) => isData(o.photo_url) || (Array.isArray(o.photos) && o.photos.some((p) => isData(p && (p.url || p))));
+const mine = (db && Array.isArray(db.offers) ? db.offers : []).filter(hasOwnPhoto);
+const camps = [];
+const cs = (db && db.settings && db.settings.campaigns) || {};
+for (const cat of Object.keys(cs)) { const sl = (cs[cat] && cs[cat].slots) || []; sl.forEach((r, i) => { if (r && isData(r.img)) camps.push({ cat, slot: i, rec: r }); }); }
+
+const found = $("#s-found");
+if (!mine.length && !camps.length) {
+  found.innerHTML = '<h2>No encontré productos en este teléfono</h2><p class="muted">Abre esta página en el mismo teléfono y el mismo navegador donde publicaste los productos (Safari, si es iPhone).</p>';
+} else {
+  const by = {}; mine.forEach((o) => { const n = NAMES[o.category] || o.category; by[n] = (by[n] || 0) + 1; });
+  found.innerHTML = `<h2>Encontré ${mine.length} ${mine.length === 1 ? "producto tuyo" : "productos tuyos"}</h2>
+    <ul class="cats">${Object.entries(by).map(([k, v]) => `<li><span>${esc(k)}</span><b>${v}</b></li>`).join("")}${camps.length ? `<li><span>Afiches de vitrina</span><b>${camps.length}</b></li>` : ""}</ul>
+    <div class="thumbs">${mine.slice(0, 8).map((o) => `<img alt="${esc(o.title)}" src="${esc(o.photo_url || (o.photos[0] && (o.photos[0].url || o.photos[0])) || "")}">`).join("")}</div>
+    ${done.size ? `<p class="muted">${done.size} ya se pasaron antes; no se duplican.</p>` : ""}`;
+  $("#s-login").hidden = false;
+}
+
+// ---------- 2. Entrar y subir ----------
+const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+async function up(dataUrl, folder) {
+  const blob = await (await fetch(dataUrl)).blob();
+  const path = `${folder}/${uid()}.jpg`;
+  const r = await sb.storage.from("photos").upload(path, blob, { contentType: blob.type || "image/jpeg" });
+  if (r.error) throw new Error(r.error.message);
+  return sb.storage.from("photos").getPublicUrl(path).data.publicUrl;
+}
+const COLS = ["title","brand","category","product_type","price_usd","tag_price_usd","discount_pct","discount1_pct","discount2_pct","weight_kg","box_l","box_w","box_h","store","size_w_cm","size_h_cm","size_d_cm","colors","sizes","last_minute","promo","status","featured","vitrina_pos","gender","created_at"];
+const log = (t, cls) => { const li = document.createElement("li"); li.textContent = t; if (cls) li.className = cls; $("#log").appendChild(li); li.scrollIntoView({ block: "nearest" }); };
+
+$("#f").onsubmit = async (e) => {
+  e.preventDefault();
+  const err = $("#ferr"); err.hidden = true; $("#go").disabled = true;
+  try {
+    const a = await sb.auth.signInWithPassword({ email: $("#em").value.trim(), password: $("#pw").value });
+    if (a.error) throw new Error(/Invalid login/i.test(a.error.message) ? "Correo o contraseña incorrectos." : /confirm/i.test(a.error.message) ? "Primero confirma tu correo (revisa tu bandeja de entrada)." : a.error.message);
+    const p = await sb.from("profiles").select("role").eq("id", a.data.user.id).single();
+    if (p.error || !p.data || p.data.role !== "shopper") throw new Error("Tu cuenta todavía no está habilitada como shopper. Avísale a Jorge y vuelve a intentarlo.");
+  } catch (x) { err.textContent = x.message; err.hidden = false; $("#go").disabled = false; return; }
+
+  $("#s-login").hidden = true; $("#s-run").hidden = false;
+  const todo = mine.filter((o) => !done.has(o.id));
+  const total = todo.length + camps.length; let n = 0, okN = 0, bad = 0;
+  $("#pg").max = Math.max(total, 1);
+  const in2days = new Date(Date.now() + 48 * 3600e3).toISOString();
+  for (const o of todo) {
+    try {
+      const row = {}; COLS.forEach((k) => { if (o[k] !== undefined && o[k] !== null) row[k] = o[k]; });
+      if (!row.title || !(Number(row.price_usd) > 0) || !row.category) throw new Error("faltan datos");
+      row.photo_url = isData(o.photo_url) ? await up(o.photo_url, "offers") : o.photo_url || null;
+      row.photos = [];
+      for (const ph of Array.isArray(o.photos) ? o.photos : []) {
+        const u = ph && (ph.url || ph); if (!u) continue;
+        row.photos.push({ ...(typeof ph === "object" ? ph : {}), url: isData(u) ? await up(u, "offers") : u });
+      }
+      // las que vencieron mientras tanto vuelven a quedar visibles 48 h
+      row.expires_at = o.expires_at && new Date(o.expires_at) > new Date() ? o.expires_at : in2days;
+      if (row.status !== "gone") row.status = "active";
+      const r = await sb.from("offers").insert(row);
+      if (r.error) throw new Error(r.error.message);
+      done.add(o.id); localStorage.setItem(DONE, JSON.stringify([...done]));
+      okN++; log(`${o.title}`, "ok");
+    } catch (x) { bad++; log(`${o.title || "Producto"}: no se pudo (${x.message})`, "err"); }
+    $("#pg").value = ++n;
+  }
+  for (const c of camps) {
+    try {
+      const img = await up(c.rec.img, "campaigns");
+      const r = await sb.from("store_campaigns").upsert({ cat: c.cat, slot: c.slot, img_url: img, title: c.rec.title || null, offer_id: null, updated_at: new Date().toISOString() }, { onConflict: "cat,slot" });
+      if (r.error) throw new Error(r.error.message);
+      okN++; log(`Afiche ${c.slot + 1} de ${NAMES[c.cat] || c.cat}`, "ok");
+    } catch (x) { bad++; log(`Afiche de ${NAMES[c.cat] || c.cat}: no se pudo (${x.message})`, "err"); }
+    $("#pg").value = ++n;
+  }
+  $("#run-h").textContent = bad ? `Listo: ${okN} pasados, ${bad} con problemas` : `Listo: ${okN} pasados a la app nueva`;
+  $("#run-p").textContent = bad ? "Puedes volver a abrir esta página para reintentar los que fallaron (los que ya pasaron no se duplican)." : "Ya puedes usar la app nueva. Tus productos están ahí para todas las clientas.";
+  $("#open").hidden = false;
+};
+</script>
+</body>
+</html>
