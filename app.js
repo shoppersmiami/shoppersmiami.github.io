@@ -2197,7 +2197,7 @@ const VIEWS = {
 
   // ---------------- Encargos (encargos.js: lista de Cheryl con "Lo encontré", Mis encargos de la clienta) ----------------
   async encargos(view) {
-    if (window.MSCuentas?.gate(view, "encargos")) return;   // invitada: crear cuenta o entrar
+    // invitada: ve el formulario y deja el encargo; la cuenta se pide recién al enviarlo (encargos.js)
     if (window.MSEncargos) return window.MSEncargos.view(view);
     view.innerHTML = `<div class="empty">No se pudieron cargar los encargos. Recarga la app.</div>`;
   },

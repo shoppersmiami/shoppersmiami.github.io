@@ -120,3 +120,15 @@
 .pn-selecting .pn-card *{pointer-events:none}
 .pn-chk{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:flex}
 .pn-card.pn-picked{box-shadow:0 0 0 2.5px #7b3fe4,0 2px 10px rgba(0,0,0,.2)}
+/* Botón "Descargar app Shoppers" (install.js) */
+#ins-bar{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 72px);z-index:60;display:flex;align-items:center;gap:6px;max-width:calc(100vw - 24px)}
+#ins-bar .ins-go{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 22px;border:0;border-radius:999px;background:linear-gradient(135deg,#7b3fe4,#22b8d6);color:#fff;font:700 17px/1 Jost,system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap;flex:none;box-shadow:0 6px 22px rgba(30,10,70,.45);cursor:pointer}
+#ins-bar .ins-x{width:40px;height:40px;border-radius:50%;border:0;background:rgba(20,10,45,.75);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+#ins-bar .ins-go:focus-visible,#ins-bar .ins-x:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.ins-steps{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:12px}
+.ins-steps li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.45}
+.ins-steps svg{flex:none;color:#7b3fe4;margin-top:1px}
+.ins-note{background:#f3edff;border-radius:10px;padding:10px 12px;font-size:15px;margin:8px 0 4px}
+.ins-modal{position:fixed;inset:0;z-index:200;background:rgba(10,5,30,.55);display:flex;align-items:flex-end;justify-content:center}
+.ins-card{background:#fffbf6;color:#241b4d;border-radius:18px 18px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom,0px));width:100%;max-width:520px}
+@media (prefers-reduced-motion:no-preference){#ins-bar{animation:insIn .35s ease-out}@keyframes insIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}}

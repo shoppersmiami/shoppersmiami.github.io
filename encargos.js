@@ -374,8 +374,17 @@
       var f = new FormData(e.target), phone = String(f.get("phone") || "").trim();
       if (digits(phone).length < 8) return toast("Escribe tu WhatsApp con código de país");
       var num = function (v) { var n = parseFloat(String(v || "").replace(",", ".")); return isFinite(n) ? n : null; };
-      await S().api.createSearch({ category: f.get("category"), brand: String(f.get("brand") || "").trim() || null, max_price_usd: num(f.get("max")),
-        size: String(f.get("size") || "").trim() || null, color: f.get("color") || null, details: String(f.get("details") || "").trim() || null, phone: phone });
+      var payload = { category: f.get("category"), brand: String(f.get("brand") || "").trim() || null, max_price_usd: num(f.get("max")),
+        size: String(f.get("size") || "").trim() || null, color: f.get("color") || null, details: String(f.get("details") || "").trim() || null, phone: phone };
+      // Invitada: recién aquí se pide la cuenta; el encargo se envía solo apenas entra
+      if (window.MSCuentas && window.MSCuentas.isGuest()) {
+        window.MSCuentas.open({ tab: "new", reason: "encargo", onDone: async function () {
+          try { await S().api.createSearch(payload); toast("Encargo enviado. " + cheryl() + " te escribe por WhatsApp cuando lo encuentre."); }
+          catch (err) { toast(err.message || "No se pudo enviar el encargo"); }
+        } });
+        return;
+      }
+      await S().api.createSearch(payload);
       if (!me.phone) { try { S().me = await S().api.updateProfile({ phone: phone }); } catch (err) {} }
       toast("Encargo enviado. " + cheryl() + " te escribe por WhatsApp cuando lo encuentre."); clientView(el);
     };

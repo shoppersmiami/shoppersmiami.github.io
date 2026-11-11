@@ -223,6 +223,7 @@
     var last = ""; try { last = localStorage.getItem(LAST_EMAIL) || ""; } catch (e) {}
     var tab = opts.tab || (last ? "in" : "new");
     var lead = opts.reason === "compra" ? "Para comprar necesitas una cuenta. Así te reconocemos cuando vuelvas y puedes seguir tus pedidos. Tu carro queda guardado."
+      : opts.reason === "encargo" ? "Para dejar tu encargo necesitas una cuenta, así te avisamos cuando lo encontremos. Tu encargo se envía apenas entres."
       : "Con tu cuenta te reconocemos cada vez que vuelves, y ves tus pedidos y tu N° de clienta.";
     var html = '<div class="acc" id="acc">' +
       '<h2 class="acc-h">' + (opts.reason === "compra" ? "Antes de comprar" : "Tu cuenta") + "</h2>" +
