@@ -131,7 +131,7 @@ const DEFAULT_SETTINGS = {
   locker_address: "[Dirección en Miami]\nMiami, FL [código postal]",
   payment_instructions: "Envía el comprobante por WhatsApp para confirmar tu compra.",
   cashier_name: "Cheryl", cashier_photo: "", bank_name: "Banco Falabella", bank_account_type: "Cuenta corriente", bank_account: "1-999-121238-5", bank_rut: "13.892.047-K", bank_holder: "Jorge Portugueiz", bank_email: "castiblanco.cheryl@gmail.com",
-  whatsapp: "+56 9 7687 8239", live_store: null, live_until: null, mall_name: "Aventura Mall", store_photos: {}, mall_photos: [],
+  whatsapp: "+56 9 7687 8239", live_store: null, live_until: null, mall_name: "Sawgrass Mills", store_photos: {}, mall_photos: [],
 };
 
 // ---------- Utilidades ----------
@@ -762,6 +762,9 @@ async function renderClient(unread) {
   try { state.offers = await state.api.listOffers(); } catch { state.offers = []; }
   const titles = { encargos: "Encargos", pedidos: "Mis pedidos y casilla", cuenta: "Mi cuenta" };
   const shops = shopList();
+  // "PRONTO": tiendas que aún no tienen productos (salvo Michael Kors). Se quita sola cuando Cheryl publica ahí.
+  const soon = new Set(shops.filter((x) => x.cat !== "Carteras" && !x.n).map((x) => x.cat));
+  if (window.MSSigns) { const prev = (window.MSSigns.soon || []).join(); window.MSSigns.soon = [...soon]; if (prev !== window.MSSigns.soon.join()) try { window.MallWalk?.refreshOffers?.(); } catch {} }
   const active = state.tab === "ofertas" ? (state.mallView === "mall" ? "mall" : state.cat) : state.tab === "caja" ? "caja" : "";
   $("#app").innerHTML = `
     ${state.api.demo ? `<div class="demo-bar">Modo demo: los datos se guardan solo en este teléfono.
@@ -773,7 +776,7 @@ async function renderClient(unread) {
       <button class="icon-btn" id="menu" aria-label="Menú">${ICON.menu}</button><button class="icon-btn vit-shops" id="vitshops" aria-label="Ver tiendas" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg></button></header>
     <main class="page ${state.tab === "ofertas" || state.tab === "caja" ? "immersive" : ""}" id="view">${titles[state.tab] ? `<button type="button" class="view-back" id="vback">← Volver</button><h2 class="view-title">${titles[state.tab]}</h2>` : ""}<div id="inner"><div class="muted">Cargando…</div></div></main>
     <nav class="storebar" aria-label="Tiendas del mall"><div class="storebar-in">
-      ${shops.map((x) => `<button class="sb ${x.cat === LAST ? "lm" : ""} ${active === x.cat ? "on" : ""} ${x.n ? "" : "empty"}" data-go="${esc(x.cat)}"><span class="si">${sbImg(x.cat) ? `<img src="${esc(sbImg(x.cat))}" alt="" loading="lazy">` : `<span class="mono">${esc(shopName(x.cat).charAt(0))}</span>`}</span><span class="sbn">${esc(shopName(x.cat))}</span></button>`).join("")}
+      ${shops.map((x) => `<button class="sb ${x.cat === LAST ? "lm" : ""} ${active === x.cat ? "on" : ""} ${x.n ? "" : "empty"}" data-go="${esc(x.cat)}"><span class="si">${sbImg(x.cat) ? `<img src="${esc(sbImg(x.cat))}" alt="" loading="lazy">` : `<span class="mono">${esc(shopName(x.cat).charAt(0))}</span>`}</span><span class="sbn">${esc(shopName(x.cat))}</span>${soon.has(x.cat) ? `<span class="sb-pronto" aria-label="Pronto">Pronto</span>` : ""}</button>`).join("")}
     </div></nav>`;
   // vitrina: botones de arriba pasan a los costados para despejar la foto
   document.body.classList.toggle("vit-mode", state.tab === "ofertas" && state.mallView === "vitrina");
@@ -887,7 +890,7 @@ const facadeOf = (cat) => (SHOPS[cat] || [0, "marble"])[1];
 const shopEmoji = (cat) => "";   // sin emojis: estética ultra real
 const storePhoto = (cat) => (state.settings.store_photos || {})[cat] || "";
 const mallPhotos = () => (Array.isArray(state.settings.mall_photos) ? state.settings.mall_photos : []);
-const mallName = () => (isLive() && state.settings.live_store) || state.settings.mall_name || "Aventura Mall";
+const mallName = () => (isLive() && state.settings.live_store) || state.settings.mall_name || "Sawgrass Mills";
 const reduceMotion = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 const offersIn = (cat, list = state.offers || []) => (cat === LAST ? list.filter((o) => o.last_minute) : list.filter((o) => (SHOPS[cat]?.[2] || [cat]).includes(o.category)));
 // Flyers de la vitrina: primero los destacados por la shopper (más nuevos primero, máx. 4).
@@ -2304,13 +2307,13 @@ const VIEWS = {
         <b>${isLive() ? ICON.live + "Estás en vivo" : "¿Estás en el mall?"}</b>
         <div class="small muted">Tus clientes ven un aviso de que estás publicando ahora.</div>
         ${isLive() ? `<div class="small" style="margin-top:6px">En ${esc(s.live_store || "")} hasta las ${hora(s.live_until, TZ_MIA)} (Miami)</div><button class="btn ghost block" id="live-off" style="margin-top:10px">Terminar</button>`
-        : `<div class="two"><div><label class="f">Tienda o mall</label><input class="in" id="live-store" list="stores" placeholder="Aventura Mall"></div>
+        : `<div class="two"><div><label class="f">Tienda o mall</label><input class="in" id="live-store" list="stores" placeholder="Sawgrass Mills"></div>
           <div><label class="f">Por cuánto tiempo</label><select class="in" id="live-h"><option value="1">1 hora</option><option value="2" selected>2 horas</option><option value="3">3 horas</option><option value="5">5 horas</option></select></div></div>
           <button class="btn coral block" id="live-on" style="margin-top:12px">Empezar en vivo</button>`}
         <datalist id="stores">${STORES.map((x) => `<option value="${esc(x)}">`).join("")}</datalist></div>
       <h2 class="section-title">El mall virtual</h2>
       <div class="card"><label class="f" style="margin-top:0">Nombre del mall</label>
-        <div class="row"><input class="in" id="mall-name" value="${esc(s.mall_name || "Aventura Mall")}"><button class="btn sm" id="mall-save">Guardar</button></div>
+        <div class="row"><input class="in" id="mall-name" value="${esc(s.mall_name || "Sawgrass Mills")}"><button class="btn sm" id="mall-save">Guardar</button></div>
         <label class="f">Fotos del pasillo (se ven al caminar de una tienda a otra)</label>
         <div class="row" style="flex-wrap:wrap;gap:8px">${(Array.isArray(s.mall_photos) ? s.mall_photos : []).map((u, i) => `<span class="thumb" style="width:64px;height:48px;border-radius:8px;position:relative"><img src="${esc(u)}" alt=""><button class="mini-x" data-unmall="${i}" aria-label="Quitar foto">×</button></span>`).join("")}
           <label class="btn ghost sm">${ICON.cam}Agregar foto del pasillo<input type="file" accept="image/*" multiple hidden id="mall-photo"></label></div>
@@ -2349,7 +2352,7 @@ const VIEWS = {
     $("#live-on") && ($("#live-on").onclick = () => save({ live_store: $("#live-store").value.trim() || null, live_until: new Date(Date.now() + Number($("#live-h").value) * 3600e3).toISOString() }, "¡Estás en vivo!"));
     $("#cajaf").onsubmit = (e) => { e.preventDefault(); const fd = new FormData(e.target); const p = {}; for (const k of ["cashier_name","bank_name","bank_account_type","bank_account","bank_rut","bank_holder","bank_email"]) p[k] = String(fd.get(k) || "").trim(); save(p, "Datos de la caja guardados"); };
     $("#cashier-photo").onchange = async (e) => { const f = e.target.files[0]; if (!f) return; toast("Subiendo foto…"); const url = await state.api.uploadPhoto(await resizeImage(f, 700, 0.85), "cashier"); save({ cashier_photo: url }, "Foto de la cajera guardada"); };
-    $("#mall-save").onclick = () => save({ mall_name: $("#mall-name").value.trim() || "Aventura Mall" }, "Nombre del mall guardado");
+    $("#mall-save").onclick = () => save({ mall_name: $("#mall-name").value.trim() || "Sawgrass Mills" }, "Nombre del mall guardado");
     const setFacade = async (cat, file) => {
       toast("Subiendo foto…");
       const url = await state.api.uploadPhoto(await resizeImage(file, 1000, 0.8), "facades");

@@ -66,14 +66,14 @@ create table if not exists public.settings (
   bank_rut             text not null default '',
   bank_holder          text not null default '',
   bank_email           text not null default '',
-  mall_name            text not null default 'Aventura Mall',
+  mall_name            text not null default 'Sawgrass Mills',
   store_photos         jsonb not null default '{}',   -- fachada de cada tienda virtual {"Carteras": url}
   mall_photos          jsonb not null default '[]',   -- fotos del pasillo para las transiciones
   live_store           text,
   live_until           timestamptz,
   updated_at           timestamptz not null default now()
 );
-alter table public.settings add column if not exists mall_name text not null default 'Aventura Mall';
+alter table public.settings add column if not exists mall_name text not null default 'Sawgrass Mills';
 alter table public.settings add column if not exists store_photos jsonb not null default '{}';
 alter table public.settings add column if not exists fixed_kg numeric not null default 3;
 alter table public.settings alter column fee_pct set default 25;
