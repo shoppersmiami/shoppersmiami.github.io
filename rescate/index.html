@@ -135,6 +135,10 @@ $("#f").onsubmit = async (e) => {
     try {
       const row = {}; COLS.forEach((k) => { if (o[k] !== undefined && o[k] !== null) row[k] = o[k]; });
       if (!row.title || !(Number(row.price_usd) > 0) || !row.category) throw new Error("faltan datos");
+      if (o.created_at) {   // ya se pasó desde otro navegador o desde el ícono de la app: no duplicar
+        const ex = await sb.from("offers").select("id").eq("title", o.title).eq("created_at", o.created_at).limit(1);
+        if (!ex.error && ex.data && ex.data.length) { done.add(o.id); localStorage.setItem(DONE, JSON.stringify([...done])); log(`${o.title} (ya estaba)`); $("#pg").value = ++n; continue; }
+      }
       row.photo_url = isData(o.photo_url) ? await up(o.photo_url, "offers") : o.photo_url || null;
       row.photos = [];
       for (const ph of Array.isArray(o.photos) ? o.photos : []) {
