@@ -85,20 +85,24 @@ const done = new Set(JSON.parse(localStorage.getItem(DONE) || "[]"));
 
 // Productos de ella = los que tienen foto subida desde el teléfono (los de prueba traen fotos de la app)
 const hasOwnPhoto = (o) => isData(o.photo_url) || (Array.isArray(o.photos) && o.photos.some((p) => isData(p && (p.url || p))));
-const mine = (db && Array.isArray(db.offers) ? db.offers : []).filter(hasOwnPhoto);
+const isDemoPhoto = (u) => typeof u === "string" && /^(\.?\/)?(demo|img|mall|_promo)\//.test(u);
+const all = db && Array.isArray(db.offers) ? db.offers : [];
+// también las que quedaron sin foto (las de prueba siempre traen foto de la app)
+const mine = all.filter((o) => hasOwnPhoto(o) || (!o.photo_url && !(Array.isArray(o.photos) && o.photos.length)) || (o.photo_url && !isDemoPhoto(o.photo_url) && !/^https?:/.test(o.photo_url)));
 const camps = [];
 const cs = (db && db.settings && db.settings.campaigns) || {};
 for (const cat of Object.keys(cs)) { const sl = (cs[cat] && cs[cat].slots) || []; sl.forEach((r, i) => { if (r && isData(r.img)) camps.push({ cat, slot: i, rec: r }); }); }
 
 const found = $("#s-found");
 if (!mine.length && !camps.length) {
-  found.innerHTML = '<h2>No encontré productos en este teléfono</h2><p class="muted">Abre esta página en el mismo teléfono y el mismo navegador donde publicaste los productos (Safari, si es iPhone).</p>';
+  found.innerHTML = '<p class="muted" style="font-size:13px">Productos guardados en este navegador: ' + all.length + '</p><h2>No encontré productos en este teléfono</h2><p class="muted">Abre esta página en el mismo teléfono y el mismo navegador donde publicaste los productos (Safari, si es iPhone).</p>';
 } else {
   const by = {}; mine.forEach((o) => { const n = NAMES[o.category] || o.category; by[n] = (by[n] || 0) + 1; });
   found.innerHTML = `<h2>Encontré ${mine.length} ${mine.length === 1 ? "producto tuyo" : "productos tuyos"}</h2>
     <ul class="cats">${Object.entries(by).map(([k, v]) => `<li><span>${esc(k)}</span><b>${v}</b></li>`).join("")}${camps.length ? `<li><span>Afiches de vitrina</span><b>${camps.length}</b></li>` : ""}</ul>
     <div class="thumbs">${mine.slice(0, 8).map((o) => `<img alt="${esc(o.title)}" src="${esc(o.photo_url || (o.photos[0] && (o.photos[0].url || o.photos[0])) || "")}">`).join("")}</div>
-    ${done.size ? `<p class="muted">${done.size} ya se pasaron antes; no se duplican.</p>` : ""}`;
+    ${done.size ? `<p class="muted">${done.size} ya se pasaron antes; no se duplican.</p>` : ""}
+    <p class="muted" style="font-size:13px">En este teléfono hay ${all.length} productos guardados en total (${all.length - mine.length} son los de prueba de la app). Guardado: ${db && db._ts ? new Date(db._ts).toLocaleString("es-CL") : "sin fecha"}.</p>`;
   $("#s-login").hidden = false;
 }
 
