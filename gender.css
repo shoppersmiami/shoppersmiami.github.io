@@ -212,3 +212,4 @@ body:has(.interior.c3) .iah-fab .iah-fab-i{margin:-3px 0 0 -4px}
 body.pv-on #ins-bar{display:none}
 .pv-bar{padding:8px 8px 8px 16px;font-size:14px}
 .pv-back{padding:10px 16px;font-size:14px}
+.menu-shop{align-self:center;margin-top:6px;border:0;background:transparent;color:inherit;opacity:.6;font:400 13px/1 var(--t-ui,system-ui);text-decoration:underline;padding:10px;cursor:pointer}

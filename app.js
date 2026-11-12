@@ -806,7 +806,8 @@ async function renderClient(unread) {
       <button class="btn ghost block" data-m="pedidos">${ICON.box}Mis pedidos y mi casilla en Miami</button>
       <button class="btn ghost block" data-m="cuenta">${ICON.user}Mi cuenta y calculadora</button>
       ${contactCherylLink() ? `<a class="btn wa block" target="_blank" rel="noopener" href="${esc(contactCherylLink())}">${ICON.chat}Contactar a ${esc(cherylName())} por WhatsApp</a>` : ""}
-      <a class="btn ghost block" target="_blank" rel="noopener" href="${esc(waShare(`Te invito a ${APP_NAME}: ofertas reales de los malls de Miami, puestas en Chile 👉 ${appLink("ofertas")}`))}">${ICON.invite}Invitar amigas a la app</a></div>`, (el, close) => { window.MSCuentas?.wireMenu(el, close); el.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { close(); go(b.dataset.m); })); });
+      <a class="btn ghost block" target="_blank" rel="noopener" href="${esc(waShare(`Te invito a ${APP_NAME}: ofertas reales de los malls de Miami, puestas en Chile 👉 ${appLink("ofertas")}`))}">${ICON.invite}Invitar amigas a la app</a>
+      ${!state.api.demo && !isRealShopper() ? `<button type="button" class="menu-shop" id="menushop">Ingreso de la shopper</button>` : ""}</div>`, (el, close) => { const ms = el.querySelector("#menushop"); if (ms) ms.onclick = () => { close(); state.me = null; renderAuth("shopper"); }; window.MSCuentas?.wireMenu(el, close); el.querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => { close(); go(b.dataset.m); })); });
   $("#app").querySelectorAll("[data-role]").forEach((b) => (b.onclick = async () => { await state.api.switchRole(b.dataset.role); state.tab = null; location.hash = ""; boot(); }));
   $("#app").querySelectorAll(".storebar [data-go]").forEach((b) => (b.onclick = () => goStore(b.dataset.go)));
   const on = $(".storebar .sb.on"); if (on) on.scrollIntoView({ inline: "center", block: "nearest" });
