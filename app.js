@@ -1742,12 +1742,11 @@ function storeCounter(view) {
   const card = (o, i, n) => {
     const q = quote(o.price_usd, o), ph = photosOf(o)[0], d = discOf(o);
     return `<article class="c3-card" data-id="${esc(o.id)}" aria-roledescription="producto" aria-label="${i + 1} de ${n}: ${esc(o.title)}">
-      <button type="button" class="c3-stage" data-open="${esc(o.id)}" aria-label="Ver ${esc(o.title)}: fotos, talla y color">
-        <span class="c3-spot" aria-hidden="true"></span>
-        ${ph ? `<img src="${esc(ph.url)}" alt="${esc(o.title)}" ${i > 1 ? `loading="lazy"` : ""} draggable="false">` : `<span class="m2-emo" aria-hidden="true"></span>`}
-        <span class="c3-more" aria-hidden="true">${photosOf(o).length > 1 ? photosOf(o).length + " fotos · " : ""}Ver detalle</span>
+      <div class="c3-stage c3-gal" data-open="${esc(o.id)}" role="button" tabindex="0" aria-label="Ver ${esc(o.title)}: fotos, talla y color">
+        ${ph ? `<div class="c3-photos" aria-label="Fotos de ${esc(o.title)}, desliza a los lados">${photosOf(o).map((p, k) => `<span class="c3-ph"><img src="${esc(p.url)}" alt="${k ? "" : esc(o.title)}" ${i > 1 || k > 0 ? `loading="lazy"` : ""} decoding="async" draggable="false"></span>`).join("")}</div>` : `<span class="m2-emo" aria-hidden="true"></span>`}
+        ${photosOf(o).length > 1 ? `<span class="c3-more c3-cnt" aria-hidden="true"><b>1</b> / ${photosOf(o).length}</span><span class="c3-dots" aria-hidden="true">${photosOf(o).slice(0, 12).map((_, k) => `<i class="${k ? "" : "on"}"></i>`).join("")}</span>` : ""}
         ${d ? discBadges(o, "c3-badge") : ""}${is2x1(o) ? `<span class="c3-badge c3-2x1">2×1</span>` : ""}
-      </button>
+      </div>
       <div class="c3-info">
         <div class="c3-meta"><span class="c3-brand">${esc(o.brand || "Sin marca")}</span><span class="c3-store">${esc(o.store || shopName(shopOfCategory(o.category)))}</span></div>
         <h3 class="c3-title">${esc(o.title)}</h3>
@@ -1811,9 +1810,9 @@ function storeCounter(view) {
     const rangeTxt = ranged ? (f.min != null && f.max != null ? `entre ${clp(f.min)} y ${clp(f.max)}` : f.min != null ? `desde ${clp(f.min)}` : `hasta ${clp(f.max)}`) : `entre ${clp(lo)} y ${clp(hi)}`;
     body.innerHTML = `
       <div class="c3-status"><span class="c3-count" aria-live="polite">${items.length ? `Precios ${rangeTxt}` : ""}${f.brands.length ? ` · <b>${esc(f.brands.join(", "))}</b>` : ""}</span>
-        ${shown.length > 1 ? `<span class="m2-nav c3-nav"><button type="button" id="m2prev" aria-label="Producto anterior">‹</button><span id="m2pos">1 / ${shown.length}</span><button type="button" id="m2next" aria-label="Producto siguiente">›</button></span>` : ""}</div>
+        ${shown.length ? `<span class="c3-n">${shown.length} producto${shown.length === 1 ? "" : "s"}</span>` : ""}</div>
       ${extra() ? `<div class="fchips">${f.colors.map((c) => chip(c, "colors", c)).join("")}${f.sizes.map((z) => chip("Talla " + z, "sizes", z)).join("")}</div>` : ""}
-      ${shown.length ? `<div class="m2-track c3-track" id="m2track" tabindex="0" aria-label="Productos, desliza para ver más">${shown.map((o, i) => card(o, i, shown.length)).join("")}</div>`
+      ${shown.length ? `<div class="m2-track c3-track c3-vlist" id="m2track" aria-label="Productos, desliza hacia abajo para ver más">${shown.map((o, i) => card(o, i, shown.length)).join("")}</div>`
       : `<div class="m2-empty">${items.length ? `<b>Nada ${ranged ? rangeTxt : "con esos filtros"}</b><span>En esta tienda hay productos entre ${clp(lo)} y ${clp(hi)}.</span><button class="btn ghost sm" id="m2reset">Ver todos</button>` : `${fams && state.fam ? `<b>Todavía no hay ${esc((fams.find((x) => x[0] === state.fam) || [0, ""])[1].toLowerCase())} Michael Kors publicados</b><span>Déjale un encargo a ${esc(cherylName())} y ella los busca en la tienda.</span><button class="btn gold sm" id="famask">Dejar un encargo</button>` : `<b>Esta tienda todavía no tiene productos hoy</b>`}`}</div>`}`;
     body.querySelector("#famask") && (body.querySelector("#famask").onclick = () => go("encargos"));
     const tr = body.querySelector("#m2track");
@@ -1822,10 +1821,14 @@ function storeCounter(view) {
       if (focusId) {
         const fi = shown.findIndex((o) => String(o.id) === focusId);
         focusId = state.focusOffer = null;
-        if (fi > 0) { idx = fi; tr.style.scrollBehavior = "auto"; tr.scrollLeft = fi * step(); requestAnimationFrame(() => { if (tr.isConnected) { tr.scrollLeft = fi * step(); tr.style.scrollBehavior = ""; } }); }
+        if (fi > 0) requestAnimationFrame(() => { const cd = tr.children[fi]; if (cd) cd.scrollIntoView({ block: "start" }); });
       }
-      tr.addEventListener("scroll", () => requestAnimationFrame(() => { const i = Math.round(tr.scrollLeft / step()); if (i !== idx) { idx = i; paintPos(); } }), { passive: true });
-      tr.addEventListener("keydown", (e) => { if (e.target !== tr) return; if (e.key === "ArrowRight") { e.preventDefault(); goTo(idx + 1); } if (e.key === "ArrowLeft") { e.preventDefault(); goTo(idx - 1); } });
+      // carrusel de fotos dentro de cada producto: contador y puntitos siguen al dedo
+      tr.querySelectorAll(".c3-photos").forEach((sc) => sc.addEventListener("scroll", () => requestAnimationFrame(() => {
+        const k = Math.round(sc.scrollLeft / Math.max(1, sc.clientWidth)), st = sc.parentNode, b = st.querySelector(".c3-cnt b");
+        if (b) b.textContent = k + 1; st.querySelectorAll(".c3-dots i").forEach((d, j) => d.classList.toggle("on", j === k));
+      }), { passive: true }));
+      tr.addEventListener("keydown", (e) => { const t = e.target.closest && e.target.closest(".c3-gal"); if (t && e.target === t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); const o = shown.find((x) => String(x.id) === t.dataset.open); if (o) openOffer(o); } });
       tr.addEventListener("click", (e) => { const t = e.target.closest("[data-open]"); if (!t) return; const o = shown.find((x) => String(x.id) === t.dataset.open); if (o) openOffer(o); });
       paintPos();
     }
