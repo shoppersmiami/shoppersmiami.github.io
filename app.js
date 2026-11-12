@@ -655,9 +655,15 @@ async function boot() {
     try { state.settings = { ...DEFAULT_SETTINGS, ...(await state.api.getSettings()) }; } catch (e) { console.warn(e); }
     await Promise.race([loadFx(), new Promise((r) => setTimeout(r, 2500))]);   // no bloquear la app si la red está lenta
     const s = await state.api.session();
-    if (!s) { state.me = null; state.booted = true; return renderAuth(); }
+    if (!s) { state.me = null; state.booted = true; let sd = false; try { sd = localStorage.getItem("ps_shopper_device") === "1"; } catch {} return renderAuth(sd && !DEMO && !state.asGuest ? "shopper" : undefined); }
     // Link de la shopper: …/#shopper abre directo el ingreso de Cheryl (las clientas usan el link normal)
     if (location.hash === "#shopper" && s.profile && (s.profile.guest || s.profile.role !== "shopper") && !DEMO) { state.me = null; state.booted = true; return renderAuth("shopper"); }
+    // Teléfono de la shopper: una vez que Cheryl entró aquí, esta app SIEMPRE parte en su panel.
+    // Si su sesión se cerró, pide su clave en vez de mostrarle el mall como si fuera clienta.
+    let shopDev = false; try { shopDev = localStorage.getItem("ps_shopper_device") === "1"; } catch {}
+    if (s.profile && s.profile.role === "shopper" && !DEMO) { try { localStorage.setItem("ps_shopper_device", "1"); } catch {} }
+    else if (shopDev && !DEMO && !state.asGuest && (!s.profile || s.profile.guest)) { state.me = null; state.booted = true; return renderAuth("shopper"); }
+    state.preview = false;
     state.me = s.profile;
     if (location.hash === "#shopper") history.replaceState(null, "", "#");
     const hash = location.hash.slice(1);
@@ -3354,7 +3360,8 @@ function renderAuth(mode = "login", msg = "") {
       <label class="f">Correo</label><input class="in" name="email" type="email" required autocomplete="email">
       <label class="f">Contraseña</label><input class="in" name="password" type="password" minlength="6" required autocomplete="${mode === "login" ? "current-password" : "new-password"}">
       <button class="btn coral block" style="margin-top:16px">${mode === "login" ? "Ingresar" : "Crear cuenta"}</button>
-    </form></div>`;
+    </form>${shopLogin ? `<button type="button" class="btn ghost block" id="asguest" style="margin-top:12px">Ver el mall como clienta</button>` : ""}</div>`;
+  $("#asguest") && ($("#asguest").onclick = () => { state.asGuest = true; if (location.hash === "#shopper") history.replaceState(null, "", "#"); boot(); });
   $("#app").querySelectorAll("[data-m]").forEach((b) => (b.onclick = () => renderAuth(b.dataset.m)));
   $("#af").onsubmit = async (e) => {
     e.preventDefault(); const f = new FormData(e.target); const btn = e.target.querySelector("button"); btn.disabled = true;
