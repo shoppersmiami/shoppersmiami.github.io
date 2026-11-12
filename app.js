@@ -1727,6 +1727,7 @@ function storeCounter(view) {
   const items = fams && state.fam ? allItems.filter((o) => mkFamOf(o) === state.fam) : allItems;
   const f = state.filters || (state.filters = freshFilters());
   const P = (o) => quote(o.price_usd, o).clp;
+  const uFmt = m2Fmt;   // el rango de precio va en pesos, puesto en Chile
   const all = items.map(P), lo = all.length ? Math.min(...all) : 0, hi = all.length ? Math.max(...all) : 0;
   const SORTS = [["new", "Recientes", "Más nuevos primero"], ["low", "Menor precio", "Precio de menor a mayor"], ["high", "Mayor precio", "Precio de mayor a menor"]];
   if (f.sort === "disc") f.sort = "new";   // el descuento lo define Cheryl en cada producto: ya no es un orden
@@ -1769,11 +1770,11 @@ function storeCounter(view) {
           <button type="button" class="m2-x" id="c3bx" aria-label="Quitar marca" ${f.brands.length ? "" : "hidden"}>✕</button>
           <div class="c3-ac" id="c3ac" role="listbox" hidden></div>
         </div>
-        <div class="m2-range" role="group" aria-label="Precio puesto en Chile">
-          <span class="m2-rl">Precio</span><span class="m2-rw">entre</span>
-          <input class="m2-in" id="m2min" inputmode="numeric" autocomplete="off" aria-label="Precio mínimo en pesos" placeholder="${m2Fmt(lo)}" value="${m2Fmt(f.min)}">
+        <div class="m2-range" role="group" aria-label="Precio puesto en Chile, en pesos">
+          <span class="m2-rl m2-rl2">Precio<small>peso chileno</small></span>
+          <input class="m2-in" id="m2min" inputmode="numeric" autocomplete="off" aria-label="Precio mínimo en pesos" placeholder="mínimo" value="${uFmt(f.min)}">
           <span class="m2-rw">y</span>
-          <input class="m2-in" id="m2max" inputmode="numeric" autocomplete="off" aria-label="Precio máximo en pesos" placeholder="${m2Fmt(hi)}" value="${m2Fmt(f.max)}">
+          <input class="m2-in" id="m2max" inputmode="numeric" autocomplete="off" aria-label="Precio máximo en pesos" placeholder="máximo" value="${uFmt(f.max)}">
           <button type="button" class="m2-x" id="m2clr" aria-label="Quitar rango de precio" ${f.min != null || f.max != null ? "" : "hidden"}>✕</button>
         </div>
         <div class="m2-sort" role="radiogroup" aria-label="Ordenar">${SORTS.map(([k, l, a]) => `<button type="button" role="radio" class="m2-so" data-sort="${k}" aria-label="${a}">${l}</button>`).join("")}</div>
@@ -1807,13 +1808,13 @@ function storeCounter(view) {
     view.querySelector("#c3bx").hidden = !f.brands.length;
     const fb = view.querySelector("#filt"); fb.textContent = "Más filtros" + (extra() ? ` (${extra()})` : ""); fb.className = `btn sm ${extra() ? "gold" : "ghost"}`;
     const ranged = f.min != null || f.max != null;
-    const rangeTxt = ranged ? (f.min != null && f.max != null ? `entre ${clp(f.min)} y ${clp(f.max)}` : f.min != null ? `desde ${clp(f.min)}` : `hasta ${clp(f.max)}`) : `entre ${clp(lo)} y ${clp(hi)}`;
+    const rangeTxt = ranged ? (f.min != null && f.max != null ? `entre ${uFmt(f.min)} y ${uFmt(f.max)}` : f.min != null ? `desde ${uFmt(f.min)}` : `hasta ${uFmt(f.max)}`) : `entre ${uFmt(lo)} y ${uFmt(hi)}`;
     body.innerHTML = `
       <div class="c3-status"><span class="c3-count" aria-live="polite">${items.length ? `Precios ${rangeTxt}` : ""}${f.brands.length ? ` · <b>${esc(f.brands.join(", "))}</b>` : ""}</span>
         ${shown.length ? `<span class="c3-n">${shown.length} producto${shown.length === 1 ? "" : "s"}</span>` : ""}</div>
       ${extra() ? `<div class="fchips">${f.colors.map((c) => chip(c, "colors", c)).join("")}${f.sizes.map((z) => chip("Talla " + z, "sizes", z)).join("")}</div>` : ""}
       ${shown.length ? `<div class="m2-track c3-track c3-vlist" id="m2track" aria-label="Productos, desliza hacia abajo para ver más">${shown.map((o, i) => card(o, i, shown.length)).join("")}</div>`
-      : `<div class="m2-empty">${items.length ? `<b>Nada ${ranged ? rangeTxt : "con esos filtros"}</b><span>En esta tienda hay productos entre ${clp(lo)} y ${clp(hi)}.</span><button class="btn ghost sm" id="m2reset">Ver todos</button>` : `${fams && state.fam ? `<b>Todavía no hay ${esc((fams.find((x) => x[0] === state.fam) || [0, ""])[1].toLowerCase())} Michael Kors publicados</b><span>Déjale un encargo a ${esc(cherylName())} y ella los busca en la tienda.</span><button class="btn gold sm" id="famask">Dejar un encargo</button>` : `<b>Esta tienda todavía no tiene productos hoy</b>`}`}</div>`}`;
+      : `<div class="m2-empty">${items.length ? `<b>Nada ${ranged ? rangeTxt : "con esos filtros"}</b><span>En esta tienda hay productos entre ${uFmt(lo)} y ${uFmt(hi)}.</span><button class="btn ghost sm" id="m2reset">Ver todos</button>` : `${fams && state.fam ? `<b>Todavía no hay ${esc((fams.find((x) => x[0] === state.fam) || [0, ""])[1].toLowerCase())} Michael Kors publicados</b><span>Déjale un encargo a ${esc(cherylName())} y ella los busca en la tienda.</span><button class="btn gold sm" id="famask">Dejar un encargo</button>` : `<b>Esta tienda todavía no tiene productos hoy</b>`}`}</div>`}`;
     body.querySelector("#famask") && (body.querySelector("#famask").onclick = () => go("encargos"));
     const tr = body.querySelector("#m2track");
     if (tr) {
@@ -1873,11 +1874,11 @@ function storeCounter(view) {
 
   // Rango de precio en CLP: acepta "$50.000", se aplica al salir del campo o tras una pausa al escribir
   const inMin = view.querySelector("#m2min"), inMax = view.querySelector("#m2max");
-  const syncInputs = () => { inMin.value = m2Fmt(f.min); inMax.value = m2Fmt(f.max); };
+  const syncInputs = () => { inMin.value = uFmt(f.min); inMax.value = uFmt(f.max); };
   let deb;
   const apply = () => { clearTimeout(deb); const a = m2Money(inMin.value), b = m2Money(inMax.value); if (a === f.min && b === f.max) return; f.min = a; f.max = b; paint(); };
   [inMin, inMax].forEach((inp) => {
-    inp.addEventListener("input", () => { const n = m2Money(inp.value); inp.value = n == null ? "" : m2Fmt(n); clearTimeout(deb); deb = setTimeout(apply, 650); });
+    inp.addEventListener("input", () => { const n = m2Money(inp.value); inp.value = n == null ? "" : uFmt(n); clearTimeout(deb); deb = setTimeout(apply, 650); });
     inp.addEventListener("change", apply);
     inp.addEventListener("blur", () => { apply(); syncInputs(); });
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); inp.blur(); } });
