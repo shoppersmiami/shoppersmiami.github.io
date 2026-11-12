@@ -2774,7 +2774,7 @@ function openOffer(o) {
         </div>
         <div class="countertop"><span class="item-shadow"></span></div>
         ${d ? discBadges(o, "c3-badge") : ""}${is2x1(o) ? `<span class="c3-badge c3-2x1">2×1</span>` : ""}
-        <div class="touch-hint" id="hint">${photos.length > 1 ? "Desliza para ver más fotos · doble toque para verla en grande" : "Doble toque para verla en grande"}</div>
+        <div class="touch-hint" id="hint">${photos.length > 1 ? "Desliza para ver más fotos · toca la foto para verla en grande" : "Toca la foto para verla en grande"}</div>
       </div>
       ${photos.length > 1 ? `<div class="c3-gal" role="group" aria-label="Fotos">${photos.map((p, i) => `<button type="button" class="${i ? "" : "on"}" data-ph="${i}" aria-label="${esc(p.caption || "Foto " + (i + 1))}"><img src="${esc(p.url)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}
     </div>
@@ -2845,15 +2845,14 @@ function openOffer(o) {
     start = null;
     if (e.type === "pointercancel") { dragX = 0; return setT(true); }
     if (Math.abs(dx) < 8 && Math.abs(dy) < 8 && dt < 300) {
-      const now = Date.now();
-      if (now - lastTap < 350) { lastTap = 0; dragX = 0; setT(false); return openLightbox(photos, idx, o.title, (i) => { if (i !== idx) { idx = i; img.src = photos[i].url; mark(i); } }); }
-      lastTap = now; dragX = 0; return setT(true);
+      dragX = 0; setT(false);
+      if (document.querySelector(".lbx")) return;
+      return openLightbox(photos, idx, o.title, (i) => { if (i !== idx) { idx = i; img.src = photos[i].url; mark(i); } });
     }
     if (photos.length > 1 && Math.abs(dx) > Math.max(50, (handle.clientWidth || 320) * 0.18) && Math.abs(dx) > Math.abs(dy)) return show(idx + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
     dragX = 0; setT(true);
   };
   handle.addEventListener("pointerup", end); handle.addEventListener("pointercancel", end); handle.addEventListener("pointerleave", (e) => start && end(e));
-  handle.addEventListener("dblclick", (e) => { e.preventDefault(); if (!lastTap) return; lastTap = 0; openLightbox(photos, idx, o.title, (i) => { if (i !== idx) { idx = i; img.src = photos[i].url; mark(i); } }); });
   setT(false);
 
   const add = root.querySelector("#addcart");
