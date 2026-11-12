@@ -195,3 +195,17 @@ body.vit-mode.vit-shops-open .iah-fab{display:flex}
 .iah-go{flex:none;height:46px;padding:0 18px;border-radius:999px;border:0;background:#22e3f0;color:#140829;font:600 15px/1 var(--t-ui,system-ui);cursor:pointer}
 @media (min-width:700px){.iah-panel{bottom:24px;border-radius:22px;border-bottom:1px solid rgba(155,92,255,.4);height:min(80dvh,720px)}.iah-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
 body:has(> .c3-detail) .iah-fab,body:has(#sheet-root .backdrop) .iah-fab,body:has(.lbx) .iah-fab{display:none}
+
+/* Menú de familias dentro de Michael Kors */
+.fam{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:8px 12px 4px;scroll-snap-type:x proximity}
+.fam::-webkit-scrollbar{display:none}
+.fam-b{flex:none;scroll-snap-align:center;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(26,16,48,.28);background:rgba(255,255,255,.75);color:#1a1030;font:500 14px/1 var(--t-ui,system-ui);cursor:pointer;white-space:nowrap}
+.fam-b i{font-style:normal;font-size:12px;opacity:.65}
+.fam-b.on{background:#1a1030;color:#fff;border-color:#1a1030}
+.fam-b.on i{opacity:.8}
+.fam-b.none{opacity:.55;border-style:dashed}
+.fam-b:focus-visible{outline:2px solid #7b3fe4;outline-offset:2px}
+/* dentro de una tienda el botón de IAH se achica para no tapar el precio */
+body:has(.interior.c3) .iah-fab{bottom:calc(var(--mw3-storebar-height,116px) + 190px + env(safe-area-inset-bottom,0px));padding:0;width:48px;height:48px;justify-content:center}
+body:has(.interior.c3) .iah-fab span:last-child{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+body:has(.interior.c3) .iah-fab .iah-fab-i{margin:-3px 0 0 -4px}

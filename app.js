@@ -1687,6 +1687,21 @@ function c3Brands(items, all) {
 }
 
 // El mostrador: al entrar a la tienda, cada producto en grande, uno por pantalla
+// Familias de la tienda Michael Kors (lo que la marca vende en sus outlets): la clienta elige qué ver.
+// [id, nombre, cómo se reconoce en el título o tipo del producto]. "carteras" recibe todo lo que no cae en otra familia.
+const MK_FAMS = [
+  ["carteras", "Carteras", null],
+  ["billeteras", "Billeteras", /billetera|tarjetero|monedero|wristlet|wallet|porta ?tarjeta/i],
+  ["mochilas", "Mochilas", /mochila|backpack/i],
+  ["zapatos", "Zapatos", /zapat|sandalia|ballerina|\bbota|bot[ií]n|mocas[ií]n|\btaco|sneaker/i],
+  ["relojes", "Relojes", /reloj|watch/i],
+  ["joyas", "Joyas", /collar|\baros\b|aretes|pulsera|anillo|\bjoya/i],
+  ["lentes", "Lentes de sol", /lentes|anteojos|gafas|sunglass/i],
+  ["ropa", "Ropa", /vestido|polera|blusa|camisa|chaqueta|abrigo|parka|jeans|pantal[oó]n|sweater|poler[oó]n|falda|traje de ba[ñn]o/i],
+  ["accesorios", "Accesorios", /cintur[oó]n|bufanda|pa[ñn]uelo|llavero|gorro|jockey|charm|guantes/i],
+  ["viaje", "Viaje", /maleta|equipaje|bolso de viaje|neceser|carry/i],
+];
+const mkFamOf = (o) => { const t = `${o.title || ""} ${o.product_type || ""}`; const hit = MK_FAMS.find((x) => x[2] && x[2].test(t)); return hit ? hit[0] : "carteras"; };
 function storeCounter(view) {
   const gNeed = shopNeedsGender(state.cat), g = gNeed ? getGender() : "";
   // tienda con catálogo por género y sin elección guardada (p. ej. llegó por una marca de otra tienda): elegir primero
@@ -1697,7 +1712,12 @@ function storeCounter(view) {
     view.querySelectorAll("[data-gender]").forEach((b) => (b.onclick = () => { setGender(b.dataset.gender); storeCounter(view); }));
     return;
   }
-  const items = offersIn(state.cat).filter((o) => genderOk(o, g));
+  const allItems = offersIn(state.cat).filter((o) => genderOk(o, g));
+  // menú de familias (solo Michael Kors): "todo" o una familia; se recuerda mientras siga en la tienda
+  const fams = state.cat === "Carteras" ? MK_FAMS : null;
+  if (!fams || !state.fam || !fams.some((x) => x[0] === state.fam)) state.fam = null;
+  const famN = {}; if (fams) allItems.forEach((o) => { const k = mkFamOf(o); famN[k] = (famN[k] || 0) + 1; });
+  const items = fams && state.fam ? allItems.filter((o) => mkFamOf(o) === state.fam) : allItems;
   const f = state.filters || (state.filters = freshFilters());
   const P = (o) => quote(o.price_usd, o).clp;
   const all = items.map(P), lo = all.length ? Math.min(...all) : 0, hi = all.length ? Math.max(...all) : 0;
@@ -1734,6 +1754,7 @@ function storeCounter(view) {
   view.innerHTML = `<div class="interior m2 c3 f-${facadeOf(state.cat)}">
       <div class="int-bar"><button class="btn ghost sm" id="back">← Vitrina</button><span class="int-sign">${esc(shopName(state.cat))}</span>
         <button class="btn sm ${extra() ? "gold" : "ghost"}" id="filt">Más filtros${extra() ? " (" + extra() + ")" : ""}</button></div>
+      ${fams ? `<div class="fam" role="tablist" aria-label="Qué quieres ver">${[["", "Todo"], ...fams.filter((x) => famN[x[0]]), ...fams.filter((x) => !famN[x[0]])].map(([id, l]) => `<button type="button" role="tab" class="fam-b${(state.fam || "") === id ? " on" : ""}${id && !famN[id] ? " none" : ""}" data-fam="${id}" aria-selected="${(state.fam || "") === id}">${esc(l)}${id ? (famN[id] ? ` <i>${famN[id]}</i>` : ` <i>pronto</i>`) : ` <i>${allItems.length}</i>`}</button>`).join("")}</div>` : ""}
       <div class="m2-ctrl c3-ctrl">
         ${gNeed ? `<div class="gsel" role="radiogroup" aria-label="Catálogo">${["mujer", "hombre"].map((x) => `<button type="button" role="radio" class="gsel-b${x === g ? " on" : ""}" data-gsel="${x}" aria-checked="${x === g}">${genderLabel(x)}</button>`).join("")}</div>` : ""}
         <div class="c3-brandbox" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-owns="c3ac">
@@ -1755,6 +1776,8 @@ function storeCounter(view) {
     </div>`;
 
   const body = view.querySelector("#m2body");
+  view.querySelectorAll("[data-fam]").forEach((b) => (b.onclick = () => { state.fam = b.dataset.fam || null; f.min = f.max = null; storeCounter(view); }));
+  { const fb = view.querySelector(".fam"), on = fb && fb.querySelector(".fam-b.on"); if (on) fb.scrollLeft = on.offsetLeft - (fb.clientWidth - on.offsetWidth) / 2; }
   let shown = [], idx = 0;
   const fit = () => {
     const tr = view.querySelector("#m2track");
@@ -1784,7 +1807,8 @@ function storeCounter(view) {
         ${shown.length > 1 ? `<span class="m2-nav c3-nav"><button type="button" id="m2prev" aria-label="Producto anterior">‹</button><span id="m2pos">1 / ${shown.length}</span><button type="button" id="m2next" aria-label="Producto siguiente">›</button></span>` : ""}</div>
       ${extra() ? `<div class="fchips">${f.colors.map((c) => chip(c, "colors", c)).join("")}${f.sizes.map((z) => chip("Talla " + z, "sizes", z)).join("")}</div>` : ""}
       ${shown.length ? `<div class="m2-track c3-track" id="m2track" tabindex="0" aria-label="Productos, desliza para ver más">${shown.map((o, i) => card(o, i, shown.length)).join("")}</div>`
-      : `<div class="m2-empty">${items.length ? `<b>Nada ${ranged ? rangeTxt : "con esos filtros"}</b><span>En esta tienda hay productos entre ${clp(lo)} y ${clp(hi)}.</span><button class="btn ghost sm" id="m2reset">Ver todos</button>` : `<b>Esta tienda todavía no tiene productos hoy</b>`}</div>`}`;
+      : `<div class="m2-empty">${items.length ? `<b>Nada ${ranged ? rangeTxt : "con esos filtros"}</b><span>En esta tienda hay productos entre ${clp(lo)} y ${clp(hi)}.</span><button class="btn ghost sm" id="m2reset">Ver todos</button>` : `${fams && state.fam ? `<b>Todavía no hay ${esc((fams.find((x) => x[0] === state.fam) || [0, ""])[1].toLowerCase())} Michael Kors publicados</b><span>Déjale un encargo a ${esc(cherylName())} y ella los busca en la tienda.</span><button class="btn gold sm" id="famask">Dejar un encargo</button>` : `<b>Esta tienda todavía no tiene productos hoy</b>`}`}</div>`}`;
+    body.querySelector("#famask") && (body.querySelector("#famask").onclick = () => go("encargos"));
     const tr = body.querySelector("#m2track");
     if (tr) {
       fit(); tr.scrollLeft = 0;
