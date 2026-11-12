@@ -614,7 +614,10 @@ async function makeSupabaseApi() {
 // Estado y navegación
 // =====================================================================
 const state = { api: null, me: null, settings: { ...DEFAULT_SETTINGS }, tab: null, cat: null, mallView: "mall", q: "", notif: [], offers: [] };
-const isShopper = () => state.me?.role === "shopper";
+// state.preview: la shopper mira el mall tal como lo ve una clienta (botón "Ver cliente"); no cambia su cuenta
+const isRealShopper = () => state.me?.role === "shopper";
+const isShopper = () => isRealShopper() && !state.preview;
+function setPreview(on) { state.preview = !!on; state.mallView = "mall"; state.cat = null; state.tab = on ? "ofertas" : "mis-ofertas"; navCommit(); render(); window.scrollTo(0, 0); }
 const isLive = () => state.settings.live_until && new Date(state.settings.live_until) > new Date();
 
 // [id, ícono (clave de ICON: línea grabada, sin emoji), etiqueta]
@@ -769,6 +772,7 @@ async function renderClient(unread) {
   $("#app").innerHTML = `
     ${state.api.demo ? `<div class="demo-bar">Modo demo: los datos se guardan solo en este teléfono.
       <div class="seg"><button data-role="client" class="on">Cliente</button><button data-role="shopper">Shopper</button></div></div>` : ""}
+    ${state.preview && isRealShopper() ? `<div class="pv-bar" role="status"><span>Vista de clienta</span><button type="button" class="pv-back" id="pvback">Volver a mi panel</button></div>` : ""}
     <header class="top client"><button class="brand" id="home" aria-label="Ir al pasillo del mall">${esc(APP_NAME)}</button>
       ${contactCherylLink() ? `<a class="icon-btn wa-ic" href="${esc(contactCherylLink())}" target="_blank" rel="noopener" aria-label="Escribirle a ${esc(cherylName())} por WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>` : ""}
       <button class="icon-btn" id="cartbtn" aria-label="Tu carro">${ICON.cart}</button>
@@ -782,6 +786,8 @@ async function renderClient(unread) {
   document.body.classList.toggle("vit-mode", state.tab === "ofertas" && state.mallView === "vitrina");
   paintCartBadge();
   $("#home").onclick = () => goStore("mall");
+  document.body.classList.toggle("pv-on", !!(state.preview && isRealShopper()));
+  $("#pvback") && ($("#pvback").onclick = () => setPreview(false));
   // vitrina despejada: la botonera de tiendas se oculta y se abre con el botón "Tiendas" del riel derecho
   const vs = $("#vitshops"); if (vs) vs.onclick = () => { const on = document.body.classList.toggle("vit-shops-open"); vs.setAttribute("aria-expanded", on); };
   document.body.classList.remove("vit-shops-open");
@@ -813,17 +819,19 @@ async function render() {
   const unread = state.notif.filter((n) => !n.read).length;
   const title = { ofertas: APP_NAME, encargos: "Encargos", pedidos: "Pedidos y casilla", cuenta: "Mi cuenta", publicar: "Publicar", "mis-ofertas": "Mis tiendas", ajustes: "Ajustes", finanzas: "Centro financiero", clientes: "Clientes" }[state.tab];
   if (!isShopper()) return renderClient(unread);
-  document.body.classList.remove("vit-mode");
+  document.body.classList.remove("vit-mode", "pv-on");
   $("#app").innerHTML = `
     ${state.api.demo ? `<div class="demo-bar">Modo demo: los datos se guardan solo en este teléfono.
       <div class="seg"><button data-role="client" class="${!isShopper() ? "on" : ""}">Cliente</button><button data-role="shopper" class="${isShopper() ? "on" : ""}">Shopper</button></div></div>` : ""}
     <header class="top"><h1 class="${state.tab === "ofertas" ? "neon" : ""}">${esc(title)}</h1>
+      <button class="btn sm gold pv-go" id="pvgo" type="button">Ver cliente</button>
       <button class="icon-btn" id="bell" aria-label="Notificaciones">${ICON.bell}${unread ? `<span class="badge">${unread}</span>` : ""}</button></header>
     <main class="page" id="view"><div class="muted">Cargando…</div></main>
     <nav class="tabs"><div class="tabs-in">${tabs().map(([id, i, l]) => `<button class="tab ${state.tab === id ? "on" : ""}" data-tab="${id}"><span class="ti">${IC(i)}</span>${l}</button>`).join("")}</div></nav>`;
   $("#app").querySelectorAll("[data-tab]").forEach((b) => (b.onclick = () => go(b.dataset.tab)));
   $("#app").querySelectorAll("[data-role]").forEach((b) => (b.onclick = async () => { await state.api.switchRole(b.dataset.role); state.tab = null; location.hash = ""; boot(); }));
   $("#bell").onclick = openNotifications;
+  $("#pvgo").onclick = () => setPreview(true);
   const view = $("#view");
   try { await (VIEWS[state.tab] || VIEWS.ofertas)(view); }
   catch (e) { console.error(e); view.innerHTML = `<div class="card"><b>Error</b><p class="muted">${esc(e.message)}</p></div>`; }
