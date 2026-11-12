@@ -152,3 +152,46 @@
 .pv-bar span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pv-back{flex:none;border:0;border-radius:999px;padding:8px 14px;background:#22e3f0;color:#140829;font:600 13px/1 var(--t-ui,system-ui);cursor:pointer}
 .pv-back:focus-visible,.pv-go:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* IAH: botón y conversación de búsqueda (iah.js) */
+.iah-fab{position:fixed;right:12px;bottom:calc(var(--mw3-storebar-height,116px) + 14px + env(safe-area-inset-bottom,0px));z-index:65;display:flex;align-items:center;gap:8px;border:1px solid rgba(34,227,240,.6);border-radius:999px;padding:11px 16px 11px 12px;background:linear-gradient(120deg,#3a1f6e,#1d0e3a 70%);color:#f6f2ff;font:600 14px/1 var(--t-ui,system-ui);box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px rgba(155,92,255,.35) inset;cursor:pointer}
+.iah-fab[hidden]{display:none}
+.iah-fab-i{width:18px;height:18px;border:2px solid #22e3f0;border-radius:50%;position:relative;flex:none}
+.iah-fab-i::after{content:"";position:absolute;width:8px;height:2px;background:#22e3f0;right:-7px;bottom:-3px;transform:rotate(45deg);border-radius:2px}
+.iah-fab:focus-visible{outline:2px solid #fff;outline-offset:2px}
+body.vit-mode .iah-fab,body.iah-open .iah-fab,body.pv-on.iah-open .iah-fab{display:none}
+body.vit-mode.vit-shops-open .iah-fab{display:flex}
+.iah{position:fixed;inset:0;z-index:9000;display:none}
+.iah.on{display:block}
+.iah-back{position:absolute;inset:0;background:rgba(8,3,20,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.iah-panel{position:absolute;left:0;right:0;bottom:0;height:min(88dvh,760px);max-width:560px;margin:0 auto;display:flex;flex-direction:column;background:#170b30;color:#f6f2ff;border-radius:22px 22px 0 0;border:1px solid rgba(155,92,255,.4);border-bottom:0;box-shadow:0 -18px 50px rgba(0,0,0,.55);font-family:var(--t-ui,system-ui)}
+@media (prefers-reduced-motion:no-preference){.iah.on .iah-panel{animation:iahUp .22s ease-out}@keyframes iahUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}}
+.iah-head{display:flex;align-items:center;gap:12px;padding:14px 14px 12px 16px;border-bottom:1px solid rgba(155,92,255,.25)}
+.iah-logo{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#22e3f0;color:#140829;font:700 13px/1 var(--t-ui,system-ui);letter-spacing:.04em}
+.iah-hd{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.iah-hd strong{font:600 17px/1.1 var(--t-disp,Georgia,serif)}
+.iah-hd span{font-size:12.5px;color:#c9bde6}
+.iah-x{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.iah-log{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 6px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
+.iah-m{max-width:100%;font-size:15px;line-height:1.45}
+.iah-me{align-self:flex-end;max-width:84%;background:#4b2a8c;padding:9px 13px;border-radius:16px 16px 4px 16px}
+.iah-it .iah-tx{background:#241247;border:1px solid rgba(155,92,255,.22);padding:10px 13px;border-radius:16px 16px 16px 4px;max-width:92%;width:fit-content}
+.iah-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.iah-card{display:flex;flex-direction:column;gap:3px;text-align:left;padding:0 0 9px;border:1px solid rgba(155,92,255,.3);border-radius:14px;background:#1d0e3a;color:inherit;overflow:hidden;cursor:pointer;font-family:inherit}
+.iah-card:focus-visible,.iah-chip:focus-visible,.iah-x:focus-visible,.iah-go:focus-visible{outline:2px solid #22e3f0;outline-offset:2px}
+.iah-ph{position:relative;display:block;aspect-ratio:1/1;background:#fff}
+.iah-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.iah-pct{position:absolute;left:6px;top:6px;background:#140829;color:#22e3f0;font:700 12px/1 var(--t-ui,system-ui);padding:5px 7px;border-radius:8px}
+.iah-ct{padding:6px 9px 0;font-size:13px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.iah-cp{padding:0 9px;font:600 15px/1.2 var(--t-ui,system-ui)}
+.iah-cs{padding:0 9px;font-size:11.5px;color:#c9bde6}
+.iah-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.iah-chip{border:1px solid rgba(34,227,240,.55);background:transparent;color:#d9fbff;border-radius:999px;padding:9px 13px;font:500 13.5px/1 var(--t-ui,system-ui);cursor:pointer}
+.iah-chip.iah-act{background:#22e3f0;color:#140829;border-color:#22e3f0;font-weight:600}
+.iah-form{display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(155,92,255,.25);background:#140829}
+.iah-in{flex:1;min-width:0;height:46px;border-radius:999px;border:1px solid rgba(155,92,255,.5);background:#241247;color:#fff;padding:0 16px;font:400 16px/1 var(--t-ui,system-ui)}
+.iah-in::placeholder{color:#a99bcb}
+.iah-in:focus{outline:2px solid #22e3f0;outline-offset:1px}
+.iah-go{flex:none;height:46px;padding:0 18px;border-radius:999px;border:0;background:#22e3f0;color:#140829;font:600 15px/1 var(--t-ui,system-ui);cursor:pointer}
+@media (min-width:700px){.iah-panel{bottom:24px;border-radius:22px;border-bottom:1px solid rgba(155,92,255,.4);height:min(80dvh,720px)}.iah-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+body:has(> .c3-detail) .iah-fab,body:has(#sheet-root .backdrop) .iah-fab,body:has(.lbx) .iah-fab{display:none}
